@@ -115,6 +115,15 @@ button:hover {
   padding: 35px 15px;
   margin-top: 60px;
   border-top: 4px solid #1d4ed8;
+  /* التعديلات لضمان التوسيط في الايباد */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-content {
+  width: 100%;
 }
 
 .footer-content p {
@@ -124,7 +133,7 @@ button:hover {
 }
 
 .footer-content strong {
-  color: #38bdf8; /* لون مميز لاسم أبو ياسر */
+  color: #38bdf8;
 }
 
 /* زر التواصل عبر تليجرام */
@@ -146,6 +155,13 @@ button:hover {
   color: #111827;
   transform: scale(1.05);
   box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+}
+
+/* تنسيق خاص للأجهزة اللوحية (الايباد) */
+@media (min-width: 701px) and (max-width: 1024px) {
+  .doctor-list {
+    grid-template-columns: repeat(2, 1fr); /* بطاقتين بجانب بعض لترتيب أفضل */
+  }
 }
 
 /* تنسيق الشاشات الصغيرة (الجوال) */
