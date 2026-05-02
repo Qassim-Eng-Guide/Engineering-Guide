@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>دليل دكاترة كلية الهندسة - جامعة القصيم</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="container">
+    <header class="header">
+      <h1>دليل دكاترة كلية الهندسة</h1>
+      <p>جامعة القصيم</p>
+    </header>
+
+    <div class="controls">
+      <input
+        type="text"
+        id="searchInput"
+        placeholder="ابحث باسم الدكتور..."
+        onkeyup="filterDoctors()"
+      >
+
+      <select id="specialtyFilter" onchange="filterDoctors()">
+        <option value="all">كل التخصصات</option>
+        <option value="mechanical">الهندسة الميكانيكية</option>
+        <option value="electrical">الهندسة الكهربائية</option>
+        <option value="civil">الهندسة المدنية</option>
+      </select>
+    </div>
+
+    <div id="doctorList" class="doctor-list">
+
+      <!-- بطاقة د. ياسر الفليح -->
+      <div class="doctor-card" data-name="د.ياسر الفليح" data-specialty="mechanical">
+        <h2>د.ياسر الفليح</h2>
+        <p><strong>التخصص:</strong> الهندسة الميكانيكية</p>
+        <p><strong>رقم المكتب:</strong> B1-G093</p>
+        <p><strong>الإيميل:</strong> qec.me@qu.edu.sa</p>
+        <button onclick="copyEmail('qec.me@qu.edu.sa')">نسخ الإيميل</button>
+      </div>
+
+      <!-- بطاقة د. منصور التركي - تم تعديل data-specialty إلى civil -->
+      <div class="doctor-card" data-name="د.منصور بن تركي التركي" data-specialty="civil">
+        <h2>د.منصور بن تركي التركي</h2>
+        <p><strong>التخصص:</strong> الهندسة المدنية</p>
+        <p><strong>رقم المكتب:</strong> B1-F125</p>
+        <p><strong>الإيميل:</strong> qec.ce@qu.edu.sa</p>
+        <button onclick="copyEmail('qec.ce@qu.edu.sa')">نسخ الإيميل</button>
+      </div>
+
+      <!-- بطاقة د.عبدالله بن عبدالرحمن بن عبدالله البريدي -->
+      <div class="doctor-card" data-name="د.عبدالله بن عبدالرحمن بن عبدالله البريدي" data-specialty="electrical">
+        <h2>د.عبدالله بن عبدالرحمن بن عبدالله البريدي</h2>
+        <p><strong>التخصص:</strong> الهندسة الكهربائية</p>
+        <p><strong>رقم المكتب:</strong> B1-S114</p>
+        <p><strong>الإيميل:</strong> qec.ee@qu.edu.sa</p>
+        <button onclick="copyEmail('qec.ee@qu.edu.sa')">نسخ الإيميل</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

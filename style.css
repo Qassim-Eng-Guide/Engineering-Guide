@@ -1,0 +1,97 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f7fb;
+  direction: rtl;
+  color: #1f2937;
+}
+
+.container {
+  width: 90%;
+  max-width: 1100px;
+  margin: auto;
+  padding: 30px 0 50px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.header h1 {
+  margin: 0;
+  color: #1d4ed8;
+  font-size: 32px;
+}
+
+.header p {
+  margin-top: 8px;
+  font-size: 18px;
+  color: #6b7280;
+}
+
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 250px;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+input, select {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 16px;
+  box-sizing: border-box;
+  background: white;
+}
+
+.doctor-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.doctor-card {
+  background: white;
+  padding: 22px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease;
+}
+
+.doctor-card:hover {
+  transform: translateY(-4px);
+}
+
+.doctor-card h2 {
+  margin-top: 0;
+  color: #111827;
+}
+
+.doctor-card p {
+  margin: 8px 0;
+  line-height: 1.7;
+}
+
+button {
+  margin-top: 12px;
+  background: #1d4ed8;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+button:hover {
+  background: #1e40af;
+}
+
+@media (max-width: 700px) {
+  .controls {
+    grid-template-columns: 1fr;
+  }
+}
