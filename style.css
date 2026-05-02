@@ -3,7 +3,7 @@ body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #f5f7fb;
-  direction: rtl; /* اتجاه الكتابة من اليمين لليسار */
+  direction: rtl; 
   color: #1f2937;
 }
 
@@ -32,18 +32,24 @@ body {
   color: #6b7280;
 }
 
+/* جملة إخلاء المسؤولية - نسخة محسنة للظهور القوي */
 .disclaimer {
-  font-size: 14px !important; /* حجم خط أصغر */
-  color: #ef4444 !important; /* لون أحمر خفيف أو برتقالي للتنبيه */
-  background: #fef2f2; /* خلفية خفيفة جداً */
   display: inline-block;
-  padding: 5px 15px;
-  border-radius: 20px;
-  margin-top: 10px;
-  border: 1px solid #fee2e2;
+  margin-top: 15px;
+  padding: 8px 20px;
+  font-size: 14px !important;
+  font-weight: bold !important;
+  /* لون أحمر صريح جداً */
+  color: #dc2626 !important; 
+  /* خلفية فاتحة مع حدود حمراء */
+  background-color: #fef2f2 !important;
+  border: 2px solid #fecaca !important;
+  border-radius: 50px;
+  line-height: 1.5;
+  box-shadow: 0 2px 5px rgba(220, 38, 38, 0.1);
 }
 
-/* قسم دليل رموز المكاتب - محسن للتوسيط والوضوح */
+/* قسم دليل رموز المكاتب */
 .office-guide {
   background: white;
   padding: 20px;
@@ -72,7 +78,6 @@ body {
   font-weight: bold;
 }
 
-/* حركة التنبيه لجذب الانتباه للرمز في الدليل العلوي */
 .guide-item span {
   background: #facc15; 
   color: #000;
@@ -89,7 +94,7 @@ body {
   100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 204, 21, 0); }
 }
 
-/* قسم أدوات البحث والفلترة */
+/* أدوات البحث والفلترة */
 .controls {
   display: grid;
   grid-template-columns: 1fr 250px;
@@ -113,14 +118,13 @@ input:focus, select:focus {
   border-color: #1d4ed8;
 }
 
-/* شبكة عرض بطاقات الدكاترة */
+/* شبكة البطاقات */
 .doctor-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
 }
 
-/* تصميم بطاقة الدكتور */
 .doctor-card {
   background: white;
   padding: 22px;
@@ -145,7 +149,6 @@ input:focus, select:focus {
   line-height: 1.7;
 }
 
-/* أزرار نسخ الإيميل */
 button {
   width: 100%;
   margin-top: 12px;
@@ -164,7 +167,7 @@ button:hover {
   background: #1e40af;
 }
 
-/* تذييل الصفحة والحقوق (Footer) */
+/* تذييل الصفحة */
 .footer {
   background-color: #111827;
   color: #ffffff;
@@ -192,7 +195,6 @@ button:hover {
   color: #38bdf8;
 }
 
-/* زر التواصل عبر تليجرام */
 .telegram-link {
   display: inline-block;
   margin-top: 18px;
@@ -213,14 +215,14 @@ button:hover {
   box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
 }
 
-/* تنسيق خاص للأجهزة اللوحية (الايباد) */
+/* ميديا كويري (الايباد) */
 @media (min-width: 701px) and (max-width: 1024px) {
   .doctor-list {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* تنسيق الشاشات الصغيرة (الجوال) */
+/* ميديا كويري (الجوال) */
 @media (max-width: 700px) {
   .controls {
     grid-template-columns: 1fr;
@@ -237,9 +239,9 @@ button:hover {
   }
 }
 
-/* --- هنا نهاية الملف (الأكواد المضافة لتمييز الحروف) --- */
+/* تمييز الحروف داخل البطاقة */
 .highlight-room {
-  background: #facc15; /* لون أصفر تمييزي */
+  background: #facc15; 
   font-weight: bold;
   padding: 2px 6px;
   border-radius: 4px;
