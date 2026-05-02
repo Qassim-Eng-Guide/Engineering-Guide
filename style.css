@@ -1,8 +1,9 @@
+/* الإعدادات العامة للموقع */
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #f5f7fb;
-  direction: rtl;
+  direction: rtl; /* اتجاه الكتابة من اليمين لليسار */
   color: #1f2937;
 }
 
@@ -13,6 +14,7 @@ body {
   padding: 30px 0 50px;
 }
 
+/* ترويسة الصفحة (Header) */
 .header {
   text-align: center;
   margin-bottom: 30px;
@@ -30,6 +32,7 @@ body {
   color: #6b7280;
 }
 
+/* قسم أدوات البحث والفلترة */
 .controls {
   display: grid;
   grid-template-columns: 1fr 250px;
@@ -45,29 +48,39 @@ input, select {
   font-size: 16px;
   box-sizing: border-box;
   background: white;
+  outline: none;
+  transition: border-color 0.3s ease;
 }
 
+input:focus, select:focus {
+  border-color: #1d4ed8;
+}
+
+/* شبكة عرض بطاقات الدكاترة */
 .doctor-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
 }
 
+/* تصميم بطاقة الدكتور */
 .doctor-card {
   background: white;
   padding: 22px;
   border-radius: 16px;
   box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .doctor-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
 }
 
 .doctor-card h2 {
   margin-top: 0;
   color: #111827;
+  font-size: 20px;
 }
 
 .doctor-card p {
@@ -75,23 +88,73 @@ input, select {
   line-height: 1.7;
 }
 
+/* أزرار نسخ الإيميل */
 button {
+  width: 100%;
   margin-top: 12px;
   background: #1d4ed8;
   color: white;
   border: none;
-  padding: 10px 16px;
+  padding: 12px 16px;
   border-radius: 8px;
   cursor: pointer;
   font-size: 15px;
+  font-weight: bold;
+  transition: background 0.3s ease;
 }
 
 button:hover {
   background: #1e40af;
 }
 
+/* تذييل الصفحة والحقوق (Footer) */
+.footer {
+  background-color: #111827;
+  color: #ffffff;
+  text-align: center;
+  padding: 35px 15px;
+  margin-top: 60px;
+  border-top: 4px solid #1d4ed8;
+}
+
+.footer-content p {
+  margin: 5px 0;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.footer-content strong {
+  color: #38bdf8; /* لون مميز لاسم أبو ياسر */
+}
+
+/* زر التواصل عبر تليجرام */
+.telegram-link {
+  display: inline-block;
+  margin-top: 18px;
+  color: #38bdf8;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 10px 25px;
+  border: 2px solid #38bdf8;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+}
+
+.telegram-link:hover {
+  background-color: #38bdf8;
+  color: #111827;
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+}
+
+/* تنسيق الشاشات الصغيرة (الجوال) */
 @media (max-width: 700px) {
   .controls {
     grid-template-columns: 1fr;
+  }
+  
+  .header h1 {
+    font-size: 26px;
   }
 }
