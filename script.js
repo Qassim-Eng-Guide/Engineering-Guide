@@ -1,19 +1,24 @@
-// التأكد من تحميل الصفحة بالكامل قبل تشغيل الكود
-document.addEventListener('DOMContentLoaded', () => {
-    
-    const darkModeToggle = document.getElementById('darkModeToggle');
-    const body = document.body;
+// دالة شاملة لضمان عمل السكريبت على جميع المتصفحات والأجهزة
+(function() {
+    const initTheme = () => {
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const body = document.body;
 
-    // 1. التحقق من التفضيل المحفوظ سابقاً
-    if (localStorage.getItem('theme') === 'dark') {
-        body.classList.add('dark-theme');
-        if(darkModeToggle) darkModeToggle.textContent = '☀️ الوضع النهاري';
-    }
+        if (!darkModeToggle) return;
 
-    // 2. برمجة زر التبديل
-    if(darkModeToggle) {
-        darkModeToggle.addEventListener('click', () => {
+        // 1. جلب التفضيل المحفوظ
+        const currentTheme = localStorage.getItem('theme');
+        
+        // 2. تطبيق الوضع المحفوظ فوراً
+        if (currentTheme === 'dark') {
+            body.classList.add('dark-theme');
+            darkModeToggle.textContent = '☀️ الوضع النهاري';
+        }
+
+        // 3. مستمع الحدث للضغط
+        darkModeToggle.onclick = () => {
             body.classList.toggle('dark-theme');
+            
             let theme = 'light';
             if (body.classList.contains('dark-theme')) {
                 theme = 'dark';
@@ -21,12 +26,21 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 darkModeToggle.textContent = '🌙 الوضع الليلي';
             }
+            
+            // حفظ الاختيار في ذاكرة المتصفح
             localStorage.setItem('theme', theme);
-        });
-    }
-});
+        };
+    };
 
-// --- دالة البحث والفلترة (تبقى خارج المستمع لكي تعمل من HTML) ---
+    // تشغيل الدالة عند تحميل الصفحة أو التنقل
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initTheme);
+    } else {
+        initTheme();
+    }
+})();
+
+// --- دالة البحث والفلترة ---
 function filterDoctors() {
     const searchInput = document.getElementById('searchInput').value.toLowerCase();
     const specialtyFilter = document.getElementById('specialtyFilter').value;
@@ -39,28 +53,21 @@ function filterDoctors() {
         const matchesSearch = name.includes(searchInput);
         const matchesSpecialty = (specialtyFilter === 'all' || specialty === specialtyFilter);
 
-        if (matchesSearch && matchesSpecialty) {
-            cards[i].style.display = "block";
-        } else {
-            cards[i].style.display = "none";
-        }
+        cards[i].style.display = (matchesSearch && matchesSpecialty) ? "block" : "none";
     }
 }
+
 // --- دالة نسخ الإيميل ---
 function copyEmail(email) {
     navigator.clipboard.writeText(email).then(() => {
         alert("تم نسخ الإيميل: " + email);
-    }).catch(err => {
-        console.error('فشل النسخ: ', err);
     });
 }
-// دالة نسخ البيانات الكاملة للدكتور
+
+// --- دالة نسخ البيانات الكاملة ---
 function copyFullInfo(name, major, office, email) {
-    const fullText = `معلومات التواصل مع الدكتور:\nالاسم: ${name}\nالتخصص: ${major}\nالمكتب: ${office}\nالإيميل: ${email}`;
-    
+    const fullText = `دليل دكاترة الهندسة:\nالاسم: ${name}\nالتخصص: ${major}\nالمكتب: ${office}\nالإيميل: ${email}`;
     navigator.clipboard.writeText(fullText).then(() => {
         alert("تم نسخ جميع بيانات " + name + " بنجاح!");
-    }).catch(err => {
-        console.error('فشل النسخ الكامل: ', err);
     });
 }
