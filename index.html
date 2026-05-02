@@ -7,6 +7,10 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- زر تبديل الوضع (ليلي / نهاري) -->
+<div class="theme-switch-wrapper">
+    <button id="darkModeToggle" class="dark-mode-btn">🌙 الوضع الليلي</button>
+</div>
 
   <div class="container">
 <header class="header">
@@ -43,13 +47,14 @@
 
     <div id="doctorList" class="doctor-list">
 
-      <!-- د. ياسر الفليح -->
+     <!-- د. ياسر الفليح -->
       <div class="doctor-card" data-name="د. ياسر الفليح" data-specialty="mechanical">
         <h2>د. ياسر الفليح</h2>
         <p><strong>التخصص:</strong> الهندسة الميكانيكية</p>
         <p><strong>رقم المكتب:</strong> B1-<span class="highlight-room">G</span>093</p>
         <p><strong>الإيميل:</strong> qec.me@qu.edu.sa</p>
         <button onclick="copyEmail('qec.me@qu.edu.sa')">نسخ الإيميل</button>
+        <button class="copy-full-btn" onclick="copyFullInfo('د. ياسر الفليح', 'الهندسة الميكانيكية', 'B1-G093', 'qec.me@qu.edu.sa')">نسخ البيانات كاملة</button>
       </div>
 
       <!-- د. منصور بن تركي التركي -->
@@ -59,6 +64,7 @@
         <p><strong>رقم المكتب:</strong> B1-<span class="highlight-room">F</span>125</p>
         <p><strong>الإيميل:</strong> qec.ce@qu.edu.sa</p>
         <button onclick="copyEmail('qec.ce@qu.edu.sa')">نسخ الإيميل</button>
+        <button class="copy-full-btn" onclick="copyFullInfo('د. منصور بن تركي التركي', 'الهندسة المدنية', 'B1-F125', 'qec.ce@qu.edu.sa')">نسخ البيانات كاملة</button>
       </div>
 
       <!-- د. عبدالله بن عبدالرحمن البريدي -->
@@ -68,6 +74,7 @@
         <p><strong>رقم المكتب:</strong> B1-<span class="highlight-room">S</span>114</p>
         <p><strong>الإيميل:</strong> qec.ee@qu.edu.sa</p>
         <button onclick="copyEmail('qec.ee@qu.edu.sa')">نسخ الإيميل</button>
+        <button class="copy-full-btn" onclick="copyFullInfo('د. عبدالله بن عبدالرحمن البريدي', 'الهندسة الكهربائية', 'B1-S114', 'qec.ee@qu.edu.sa')">نسخ البيانات كاملة</button>
       </div>
 
       <!-- د. عبدالرحمن الخريجي -->
@@ -77,6 +84,7 @@
         <p><strong>رقم المكتب:</strong> B1-<span class="highlight-room">G</span>100</p>
         <p><strong>الإيميل:</strong> 4094@qu.edu.sa</p>
         <button onclick="copyEmail('4094@qu.edu.sa')">نسخ الإيميل</button>
+        <button class="copy-full-btn" onclick="copyFullInfo('د. عبدالرحمن الخريجي', 'الهندسة الميكانيكية', 'B1-G100', '4094@qu.edu.sa')">نسخ البيانات كاملة</button>
       </div>
 
       <!-- د. مشعل المشيقح -->
@@ -86,6 +94,7 @@
         <p><strong>رقم المكتب:</strong> B1-<span class="highlight-room">F</span>032</p>
         <p><strong>الإيميل:</strong> m.moshaogeh@qu.edu.sa</p>
         <button onclick="copyEmail('m.moshaogeh@qu.edu.sa')">نسخ الإيميل</button>
+        <button class="copy-full-btn" onclick="copyFullInfo('د. مشعل المشيقح', 'الهندسة المدنية', 'B1-F032', 'm.moshaogeh@qu.edu.sa')">نسخ البيانات كاملة</button>
       </div>
 
       <!-- د. محمد إسلام -->
@@ -95,6 +104,7 @@
         <p><strong>رقم المكتب:</strong> B1-<span class="highlight-room">S</span>026</p>
         <p><strong>الإيميل:</strong> Muha.khan@qu.edu.sa</p>
         <button onclick="copyEmail('Muha.khan@qu.edu.sa')">نسخ الإيميل</button>
+        <button class="copy-full-btn" onclick="copyFullInfo('د. محمد إسلام', 'الهندسة الكهربائية', 'B1-S026', 'Muha.khan@qu.edu.sa')">نسخ البيانات كاملة</button>
       </div>
 
       <!-- د. إبراهيم السعيدان -->
@@ -104,6 +114,7 @@
         <p><strong>رقم المكتب:</strong> B1-<span class="highlight-room">S</span>036</p>
         <p><strong>الإيميل:</strong> alsaidan@qu.edu.sa</p>
         <button onclick="copyEmail('alsaidan@qu.edu.sa')">نسخ الإيميل</button>
+        <button class="copy-full-btn" onclick="copyFullInfo('د. إبراهيم السعيدان', 'الهندسة الكهربائية', 'B1-S036', 'alsaidan@qu.edu.sa')">نسخ البيانات كاملة</button>
       </div>
 
       <!-- د. وليد الجرايحي -->
@@ -113,6 +124,7 @@
         <p><strong>رقم المكتب:</strong> B1-<span class="highlight-room">G</span>119</p>
         <p><strong>الإيميل:</strong> W.Nasr@qu.edu.sa</p>
         <button onclick="copyEmail('W.Nasr@qu.edu.sa')">نسخ الإيميل</button>
+        <button class="copy-full-btn" onclick="copyFullInfo('د. وليد الجرايحي', 'الهندسة الميكانيكية', 'B1-G119', 'W.Nasr@qu.edu.sa')">نسخ البيانات كاملة</button>
       </div>
 
       <!-- د. هاني عمار -->
@@ -122,6 +134,7 @@
         <p><strong>رقم المكتب:</strong> B1-<span class="highlight-room">G</span>116</p>
         <p><strong>الإيميل:</strong> h.ammar@qu.edu.sa</p>
         <button onclick="copyEmail('h.ammar@qu.edu.sa')">نسخ الإيميل</button>
+        <button class="copy-full-btn" onclick="copyFullInfo('د. هاني عمار', 'الهندسة الميكانيكية', 'B1-G116', 'h.ammar@qu.edu.sa')">نسخ البيانات كاملة</button>
       </div>
 
       <!-- د. أحمد علاء محفوظ -->
@@ -131,6 +144,7 @@
         <p><strong>رقم المكتب:</strong> B1-<span class="highlight-room">S</span>038</p>
         <p><strong>الإيميل:</strong> alaa@qec.edu.sa</p>
         <button onclick="copyEmail('alaa@qec.edu.sa')">نسخ الإيميل</button>
+        <button class="copy-full-btn" onclick="copyFullInfo('د. أحمد علاء محفوظ', 'الهندسة الكهربائية', 'B1-S038', 'alaa@qec.edu.sa')">نسخ البيانات كاملة</button>
       </div>
 
       <!-- د. سعد مكرس -->
@@ -140,6 +154,7 @@
         <p><strong>رقم المكتب:</strong> BI-<span class="highlight-room">G</span>65</p>
         <p><strong>الإيميل:</strong> mkras@qu.edu.sa</p>
         <button onclick="copyEmail('mkras@qu.edu.sa')">نسخ الإيميل</button>
+        <button class="copy-full-btn" onclick="copyFullInfo('د. سعد مكرس', 'الهندسة الميكانيكية', 'BI-G65', 'mkras@qu.edu.sa')">نسخ البيانات كاملة</button>
       </div>
 
       <!-- د. صالح الزغيبي -->
@@ -149,6 +164,7 @@
         <p><strong>رقم المكتب:</strong> B1-<span class="highlight-room">G</span>038</p>
         <p><strong>الإيميل:</strong> s.alzughaibi@qu.edu.sa</p>
         <button onclick="copyEmail('s.alzughaibi@qu.edu.sa')">نسخ الإيميل</button>
+        <button class="copy-full-btn" onclick="copyFullInfo('د. صالح الزغيبي', 'الهندسة الميكانيكية', 'B1-G038', 's.alzughaibi@qu.edu.sa')">نسخ البيانات كاملة</button>
       </div>
 
       <!-- د. عبدالعزيز العبودي -->
@@ -158,6 +174,7 @@
         <p><strong>رقم المكتب:</strong> B1-<span class="highlight-room">S</span>000</p>
         <p><strong>الإيميل:</strong> alaboodi@qu.edu.sa</p>
         <button onclick="copyEmail('alaboodi@qu.edu.sa')">نسخ الإيميل</button>
+        <button class="copy-full-btn" onclick="copyFullInfo('د. عبدالعزيز العبودي', 'الهندسة الميكانيكية', 'B1-S000', 'alaboodi@qu.edu.sa')">نسخ البيانات كاملة</button>
       </div>
 
       <!-- د. أحمد الشويرخ -->
@@ -167,6 +184,7 @@
         <p><strong>رقم المكتب:</strong> B1-<span class="highlight-room">G</span>037</p>
         <p><strong>الإيميل:</strong> shoierkh@qu.edu.sa</p>
         <button onclick="copyEmail('shoierkh@qu.edu.sa')">نسخ الإيميل</button>
+        <button class="copy-full-btn" onclick="copyFullInfo('د. أحمد الشويرخ', 'الهندسة الميكانيكية', 'B1-G037', 'shoierkh@qu.edu.sa')">نسخ البيانات كاملة</button>
       </div>
 
       <!-- د. حسين زين -->
@@ -176,6 +194,7 @@
         <p><strong>رقم المكتب:</strong> B1-<span class="highlight-room">G</span>034</p>
         <p><strong>الإيميل:</strong> H.Hussein@qu.edu.sa</p>
         <button onclick="copyEmail('H.Hussein@qu.edu.sa')">نسخ الإيميل</button>
+        <button class="copy-full-btn" onclick="copyFullInfo('د. حسين زين', 'الهندسة الميكانيكية', 'B1-G034', 'H.Hussein@qu.edu.sa')">نسخ البيانات كاملة</button>
       </div>
 
       <!-- د. إبراهيم العتيبي -->
@@ -185,6 +204,7 @@
         <p><strong>رقم المكتب:</strong> B-<span class="highlight-room">S</span>093</p>
         <p><strong>الإيميل:</strong> i.alotaibi@qu.edu.sa</p>
         <button onclick="copyEmail('i.alotaibi@qu.edu.sa')">نسخ الإيميل</button>
+        <button class="copy-full-btn" onclick="copyFullInfo('د. إبراهيم العتيبي', 'الهندسة الكهربائية', 'B-S093', 'i.alotaibi@qu.edu.sa')">نسخ البيانات كاملة</button>
       </div>
 
       <!-- د. نبيل الصعب -->
@@ -194,6 +214,7 @@
         <p><strong>رقم المكتب:</strong> B1-<span class="highlight-room">S</span>022</p>
         <p><strong>الإيميل:</strong> n.alsaab@qu.edu.sa</p>
         <button onclick="copyEmail('n.alsaab@qu.edu.sa')">نسخ الإيميل</button>
+        <button class="copy-full-btn" onclick="copyFullInfo('د. نبيل الصعب', 'الهندسة المدنية', 'B1-S022', 'n.alsaab@qu.edu.sa')">نسخ البيانات كاملة</button>
       </div>
 
       <!-- د. إقبال أحمد -->
@@ -203,6 +224,7 @@
         <p><strong>رقم المكتب:</strong> B1-<span class="highlight-room">G</span>028</p>
         <p><strong>الإيميل:</strong> iqbal@qec.edu.sa</p>
         <button onclick="copyEmail('iqbal@qec.edu.sa')">نسخ الإيميل</button>
+        <button class="copy-full-btn" onclick="copyFullInfo('د. إقبال أحمد', 'الهندسة الميكانيكية', 'B1-G028', 'iqbal@qec.edu.sa')">نسخ البيانات كاملة</button>
       </div>
 
       <!-- د. سيد عثمان -->
@@ -212,6 +234,7 @@
         <p><strong>رقم المكتب:</strong> B1-<span class="highlight-room">G</span>061</p>
         <p><strong>الإيميل:</strong> So.ossman@qu.edu.sa</p>
         <button onclick="copyEmail('So.ossman@qu.edu.sa')">نسخ الإيميل</button>
+        <button class="copy-full-btn" onclick="copyFullInfo('د. سيد عثمان', 'الهندسة الكهربائية', 'B1-G061', 'So.ossman@qu.edu.sa')">نسخ البيانات كاملة</button>
       </div>
 
       <!-- د. منير سعيد -->
@@ -221,6 +244,7 @@
         <p><strong>رقم المكتب:</strong> B1-<span class="highlight-room">F</span>014</p>
         <p><strong>الإيميل:</strong> m.abdo@qu.edu.sa</p>
         <button onclick="copyEmail('m.abdo@qu.edu.sa')">نسخ الإيميل</button>
+        <button class="copy-full-btn" onclick="copyFullInfo('د. منير سعيد', 'الهندسة المدنية', 'B1-F014', 'm.abdo@qu.edu.sa')">نسخ البيانات كاملة</button>
       </div>
 
     </div>

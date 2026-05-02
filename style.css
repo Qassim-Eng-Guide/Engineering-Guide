@@ -249,3 +249,62 @@ button:hover {
   display: inline-block;
   margin: 0 2px;
 }
+/* تنسيق زر تبديل الوضع */
+.theme-switch-wrapper {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1100;
+}
+
+.dark-mode-btn {
+    background: #1d4ed8;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    width: auto;
+    transition: all 0.3s ease;
+}
+
+.dark-mode-btn:hover {
+    transform: scale(1.05);
+    background: #1e40af;
+}
+
+/* ألوان الوضع الليلي (Dark Mode) */
+body.dark-theme {
+    background: #121212;
+    color: #e5e7eb;
+}
+
+body.dark-theme .doctor-card,
+body.dark-theme .office-guide,
+body.dark-theme input,
+body.dark-theme select {
+    background: #1e1e1e;
+    color: #ffffff;
+    border-color: #374151;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+body.dark-theme .doctor-card h2, 
+body.dark-theme .header h1 {
+    color: #38bdf8; /* أزرق سماوي مريح للعين ليلاً */
+}
+
+body.dark-theme .disclaimer {
+    background: #2d1a1a;
+    border-color: #442222;
+    color: #f87171 !important;
+}
+
+/* الحفاظ على وضوح التمييز الأصفر في الوضع الليلي */
+body.dark-theme .highlight-room {
+    background: #facc15;
+    color: #000;
+}
