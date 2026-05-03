@@ -1,25 +1,47 @@
 // 1. تعريف المتغيرات الأساسية
-var darkModeToggle = document.getElementById('darkModeToggle');
-var body = document.body;
+const body = document.body;
+const darkModeToggle = document.getElementById('darkModeToggle');
+const langToggle = document.getElementById('langToggle');
 let currentLang = 'ar';
 
 // 2. فحص التفضيل المحفوظ للوضع الليلي
 if (localStorage.getItem('theme') === 'dark') {
     body.classList.add('dark-theme');
-    if (darkModeToggle) darkModeToggle.textContent = '☀️ الوضع النهاري';
+    updateDarkModeButton(true);
 }
 
-// 3. وظيفة التبديل (الوضع الليلي)
+// 3. وظائف القائمة (الترس)
+function toggleMenu() {
+    const menu = document.querySelector('.settings-menu');
+    menu.classList.toggle('active');
+}
+
+// إغلاق القائمة عند الضغط خارجها
+document.addEventListener('click', function(event) {
+    const menu = document.querySelector('.settings-menu');
+    if (menu && !menu.contains(event.target) && menu.classList.contains('active')) {
+        menu.classList.remove('active');
+    }
+});
+
+// 4. تبديل الوضع الليلي
 if (darkModeToggle) {
-    darkModeToggle.onclick = function() {
+    darkModeToggle.onclick = function(e) {
+        e.stopPropagation(); // منع إغلاق القائمة فور الضغط
         body.classList.toggle('dark-theme');
         const isDark = body.classList.contains('dark-theme');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        darkModeToggle.textContent = isDark ? '☀️ الوضع النهاري' : '🌙 الوضع الليلي';
+        updateDarkModeButton(isDark);
     };
 }
 
-// 4. نظام الترجمة الشامل
+function updateDarkModeButton(isDark) {
+    if (darkModeToggle) {
+        darkModeToggle.textContent = isDark ? '☀️ الوضع النهاري' : '🌙 الوضع الليلي';
+    }
+}
+
+// 5. نظام الترجمة الشامل
 const translations = {
     ar: {
         title: "كلية الهندسة",
@@ -58,7 +80,11 @@ function toggleLanguage() {
         if (text) el.innerText = text;
     });
 
-    // ج. ترجمة أسماء الدكاترة داخل البطاقات
+    // ج. تغيير اتجاه الموقع وتنسيقه
+    body.style.direction = currentLang === 'ar' ? 'rtl' : 'ltr';
+    currentLang === 'en' ? body.classList.add('en-mode') : body.classList.remove('en-mode');
+    
+    // د. ترجمة أسماء الدكاترة (إذا كانت البيانات موجودة)
     document.querySelectorAll('.doctor-card').forEach(card => {
         const nameAr = card.getAttribute('data-name');
         const nameEn = card.getAttribute('data-name-en');
@@ -68,15 +94,10 @@ function toggleLanguage() {
         }
     });
 
-    // د. تغيير اتجاه الموقع
-    body.style.direction = currentLang === 'ar' ? 'rtl' : 'ltr';
-    currentLang === 'en' ? body.classList.add('en-mode') : body.classList.remove('en-mode');
-    
-    // إعادة تشغيل الفلترة لتحديث رسالة "لا يوجد نتائج" باللغة الجديدة
     filterDoctors();
 }
 
-// 5. دالة البحث والفلترة (مطورة تدعم اللغتين)
+// 6. دالة البحث والفلترة
 function filterDoctors() {
     var searchInput = document.getElementById('searchInput').value.toLowerCase();
     var specialtyFilter = document.getElementById('specialtyFilter').value;
@@ -93,7 +114,6 @@ function filterDoctors() {
         var nameEn = (cards[i].getAttribute('data-name-en') || "").toLowerCase();
         
         var matchesSpecialty = (specialtyFilter === 'all' || specialty === specialtyFilter);
-        // يبحث في الاسمين العربي والانجليزي معاً لراحة المستخدم
         var matchesSearch = nameAr.includes(searchInput) || nameEn.includes(searchInput);
 
         if (matchesSearch && matchesSpecialty) {
@@ -104,7 +124,7 @@ function filterDoctors() {
         }
     }
 
-    if (visibleCount === 0) {
+    if (visibleCount === 0 && doctorList) {
         var msg = document.createElement('div');
         msg.className = 'no-results-msg';
         msg.innerHTML = translations[currentLang].noResults;
@@ -112,38 +132,41 @@ function filterDoctors() {
     }
 }
 
-// 6. شريط تقدم القراءة والنسخ
+// 7. شريط التقدم والتحميل
 window.addEventListener('scroll', function() {
-    var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    var winScroll = body.scrollTop || document.documentElement.scrollTop;
     var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
     var scrolled = (winScroll / height) * 100;
     var scrollProgress = document.getElementById("scroll-progress");
     if (scrollProgress) scrollProgress.style.width = scrolled + "%";
 });
 
-function copyEmail(email) {
-    navigator.clipboard.writeText(email).then(() => {
-        alert(currentLang === 'ar' ? "تم نسخ الإيميل: " : "Email Copied: " + email);
-    });
-}
-
-function copyFullInfo(name, major, office, email) {
-    var fullText = `Name: ${name}\nMajor: ${major}\nOffice: ${office}\nEmail: ${email}`;
-    navigator.clipboard.writeText(fullText).then(() => {
-        alert(currentLang === 'ar' ? "تم نسخ البيانات بنجاح!" : "Info Copied Successfully!");
-    });
-}
-
-window.addEventListener('load', function() {
-    const loader = document.getElementById('loader-wrapper');
-    loader.style.opacity = '0';
-    setTimeout(() => { loader.style.display = 'none'; }, 600);
-});
-
 window.addEventListener('load', function() {
     const loader = document.getElementById('loader-wrapper');
     if (loader) {
         loader.style.opacity = '0';
-        setTimeout(() => { loader.style.display = 'none'; }, 500);
+        setTimeout(() => { loader.style.display = 'none'; }, 600);
     }
 });
+
+// 8. وظائف النسخ
+function copyEmail(email) {
+    navigator.clipboard.writeText(email).then(() => {
+        alert(currentLang === 'ar' ? "تم نسخ الإيميل: " + email : "Email Copied: " + email);
+    });
+}
+function copyFullInfo(name, major, office, email) {
+    // إضافة الجملة الافتتاحية كما كانت سابقاً
+    const header = currentLang === 'ar' ? "معلومات التواصل مع الدكتور:" : "Doctor Contact Information:";
+    
+    // تجهيز النص الكامل بالترتيب المطلوب
+    const fullText = `${header}\nالاسم: ${name}\nالتخصص: ${major}\nالمكتب: ${office}\nالإيميل: ${email}`;
+    
+    // تنفيذ عملية النسخ
+    navigator.clipboard.writeText(fullText).then(() => {
+        const alertMsg = currentLang === 'ar' ? "تم نسخ البيانات بنجاح!" : "Info Copied Successfully!";
+        alert(alertMsg);
+    }).catch(err => {
+        alert("حدث خطأ في النسخ، تأكد من تحديث الصفحة.");
+    });
+}

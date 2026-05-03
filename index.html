@@ -1,56 +1,68 @@
-<!DOCTYPE html>
+<!<!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>بوصلة الهندسة</title>
-  
-  <!-- استدعاء خط IBM Plex Sans Arabic (خط ثمانية) -->
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;600;700&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>بوصلة الهندسة</title>
+    
+    <!-- استدعاء خط IBM Plex Sans Arabic (خط ثمانية) -->
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="corner-mark mark-tr"></div>
-<div class="corner-mark mark-bl"></div>
-<div id="loader-wrapper">
-    <div class="gear-loader">⚙️</div>
-    <p style="font-family: 'IBM Plex Sans Arabic', sans-serif; color: #006C35;">جاري تشغيل بوصلة الهندسة...</p>
-</div>
-  <!-- شريط تقدم القراءة العلوي -->
-  <div id="scroll-progress"></div>
-  <!-- أزرار التحكم (لغة + وضع ليلي) -->
-  <div class="theme-switch-wrapper">
-      <button id="langToggle" class="dark-mode-btn" onclick="toggleLanguage()">🌐 English</button>
-      <button id="darkModeToggle" class="dark-mode-btn" onclick="toggleMyTheme()">🌙 الوضع الليلي</button>
-  </div>
+    <!-- علامات الزوايا الهندسية -->
+    <div class="corner-mark mark-tr"></div>
+    <div class="corner-mark mark-bl"></div>
 
-  <div class="container">
-    <header class="header">
-      <h1 class="translate" data-ar="كلية الهندسة" data-en="College of Engineering">كلية الهندسة</h1>
-      <p class="translate" data-ar="جامعة القصيم" data-en="Qassim University">جامعة القصيم</p>
-      <p class="disclaimer translate" data-ar="هذا الموقع مبادرة طلابية لتسهيل التواصل مع الدكتور وليس جهة رسمية تابعة للكلية." data-en="This website is a student initiative to facilitate communication and is not an official faculty entity.">هذا الموقع مبادرة طلابية لتسهيل التواصل مع الدكتور وليس جهة رسمية تابعة للكلية.</p>
-    </header>
-
-    <section class="office-guide">
-      <h3 class="translate" data-ar="دليل الرموز :" data-en="Office Guide:">دليل الرموز :</h3>
-      <div class="guide-items">
-        <div class="guide-item"><span>G</span> <b class="translate" data-ar="الدور الأرضي" data-en="Ground Floor">الدور الأرضي</b></div>
-        <div class="guide-item"><span>F</span> <b class="translate" data-ar="الدور الأول" data-en="First Floor">الدور الأول</b></div>
-        <div class="guide-item"><span>S</span> <b class="translate" data-ar="الدور الثاني" data-en="Second Floor">الدور الثاني</b></div>
-      </div>
-    </section>
-
-    <div class="controls">
-      <input type="text" id="searchInput" placeholder="ابحث باسم الدكتور..." onkeyup="filterDoctors()" class="translate-placeholder" data-ar="ابحث باسم الدكتور..." data-en="Search by doctor name...">
-
-      <select id="specialtyFilter" onchange="filterDoctors()">
-        <option value="all" class="translate" data-ar="كل التخصصات" data-en="All Specialties">كل التخصصات</option>
-        <option value="mechanical" class="translate" data-ar="الهندسة الميكانيكية" data-en="Mechanical Engineering">الهندسة الميكانيكية</option>
-        <option value="electrical" class="translate" data-ar="الهندسة الكهربائية" data-en="Electrical Engineering">الهندسة الكهربائية</option>
-        <option value="civil" class="translate" data-ar="الهندسة المدنية" data-en="Civil Engineering">الهندسة المدنية</option>
-      </select>
+    <!-- شاشة التحميل -->
+    <div id="loader-wrapper">
+        <div class="gear-loader">⚙️</div>
+        <p style="font-family: 'IBM Plex Sans Arabic', sans-serif; color: #006C35;">جاري تشغيل بوصلة الهندسة...</p>
     </div>
+
+    <!-- شريط تقدم القراءة العلوي -->
+    <div id="scroll-progress"></div>
+
+    <!-- قائمة التحكم المخفية داخل الترس -->
+    <div class="settings-menu">
+        <div class="menu-options" id="menuOptions">
+            <button id="langToggle" onclick="toggleLanguage()">🌐 English</button>
+            <button id="darkModeToggle">🌙 الوضع الليلي</button>
+        </div>
+        <!-- الترس هو المحرك الرئيسي للقائمة -->
+        <div class="floating-gear" id="mainGear" onclick="toggleMenu()">⚙️</div>
+    </div>
+
+    <div class="container">
+        <!-- الترويسة -->
+        <header class="header">
+            <h1 class="translate" data-ar="كلية الهندسة" data-en="College of Engineering">كلية الهندسة</h1>
+            <p class="translate" data-ar="جامعة القصيم" data-en="Qassim University">جامعة القصيم</p>
+            <p class="disclaimer translate" data-ar="هذا الموقع مبادرة طلابية لتسهيل التواصل مع الدكتور وليس جهة رسمية تابعة للكلية." data-en="This website is a student initiative to facilitate communication and is not an official faculty entity.">هذا الموقع مبادرة طلابية لتسهيل التواصل مع الدكتور وليس جهة رسمية تابعة للكلية.</p>
+        </header>
+
+        <!-- دليل رموز المكاتب -->
+        <section class="office-guide">
+            <h3 class="translate" data-ar="دليل الرموز :" data-en="Office Guide:">دليل الرموز :</h3>
+            <div class="guide-items">
+                <div class="guide-item"><span>G</span> <b class="translate" data-ar="الدور الأرضي" data-en="Ground Floor">الدور الأرضي</b></div>
+                <div class="guide-item"><span>F</span> <b class="translate" data-ar="الدور الأول" data-en="First Floor">الدور الأول</b></div>
+                <div class="guide-item"><span>S</span> <b class="translate" data-ar="الدور الثاني" data-en="Second Floor">الدور الثاني</b></div>
+            </div>
+        </section>
+
+        <!-- أدوات البحث والفلترة -->
+        <div class="controls">
+            <input type="text" id="searchInput" placeholder="ابحث باسم الدكتور..." onkeyup="filterDoctors()" class="translate-placeholder" data-ar="ابحث باسم الدكتور..." data-en="Search by doctor name...">
+
+            <select id="specialtyFilter" onchange="filterDoctors()">
+                <option value="all" class="translate" data-ar="كل التخصصات" data-en="All Specialties">كل التخصصات</option>
+                <option value="mechanical" class="translate" data-ar="الهندسة الميكانيكية" data-en="Mechanical Engineering">الهندسة الميكانيكية</option>
+                <option value="electrical" class="translate" data-ar="الهندسة الكهربائية" data-en="Electrical Engineering">الهندسة الكهربائية</option>
+                <option value="civil" class="translate" data-ar="الهندسة المدنية" data-en="Civil Engineering">الهندسة المدنية</option>
+            </select>
+        </div>
 
     <div id="doctorList" class="doctor-list">
 
@@ -619,6 +631,5 @@
 </footer>
 
   <script src="script.js"></script>
-  <div class="floating-gear">⚙️</div>
 </body>
 </html>

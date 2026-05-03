@@ -1,509 +1,316 @@
-/* 1. التنسيق الأساسي للموقع */
+/* =========================================
+   1. التنسيق الأساسي (Body)
+   ========================================= */
 body {
-  margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f5f7fb;
-  direction: rtl;
-  color: #1f2937;
-  min-height: 100vh;
-  position: relative;
-}
-
-/* صورة الخلفية - تم إصلاح الشفافية لتناسب الوضعين */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('college-bg.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  filter: blur(3px);
-  opacity: 0.15;
-  z-index: -1;
-}
-
-/* شريط تقدم القراءة - تحول للأخضر */
-#scroll-progress {
-  position: fixed;
-  top: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(to left, #006C35, #4ade80);
-  z-index: 2000;
-  width: 0%;
-  transition: width 0.1s ease;
-}
-
-.container {
-  width: 90%;
-  max-width: 1100px;
-  margin: auto;
-  padding: 30px 0 50px;
-}
-
-/* تنسيق الترويسة بخط ثمانية */
-.header {
-    text-align: center;
-    margin-bottom: 40px;
-}
-
-.header h1 {
-    font-family: 'IBM Plex Sans Arabic', sans-serif;
-    font-weight: 700;
-    font-size: 42px;
-    color: #006C35; /* أخضر سعودي */
     margin: 0;
-    letter-spacing: -0.5px;
-}
-
-.header p:nth-of-type(1) {
-    font-family: 'IBM Plex Sans Arabic', sans-serif;
-    font-weight: 400;
-    font-size: 20px;
-    color: #6b7280;
-    margin-top: 5px;
-}
-
-/* الخط تحت جامعة القصيم - تحول للأخضر */
-.header p:first-of-type::after {
-    content: "";
-    display: block;
-    width: 40px;
-    height: 3px;
-    background: #006C35;
-    margin: 15px auto;
-    border-radius: 2px;
-}
-
-.header::after {
-    display: none !important;
-}
-
-/* الوضع الليلي للخط - أخضر فاتح */
-body.dark-theme .header h1 {
-    color: #4ade80;
-}
-
-.disclaimer {
-  display: inline-block;
-  margin-top: 15px;
-  padding: 8px 20px;
-  font-size: 14px !important;
-  font-weight: bold !important;
-  color: #dc2626 !important;
-  background-color: #fef2f2 !important;
-  border: 2px solid #fecaca !important;
-  border-radius: 50px;
-  line-height: 1.5;
-  box-shadow: 0 2px 5px rgba(220, 38, 38, 0.1);
-}
-
-/* قسم دليل رموز المكاتب */
-.office-guide {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 25px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.guide-items {
-  display: flex;
-  justify-content: center;
-  gap: 25px;
-  flex-wrap: wrap;
-  width: 100%;
-}
-
-.guide-item {
-  font-size: 16px;
-  color: #4b5563;
-  font-weight: bold;
-}
-
-.guide-item span {
-  background: #facc15;
-  color: #000;
-  padding: 4px 12px;
-  border-radius: 6px;
-  margin-left: 8px;
-  display: inline-block;
-  animation: pulse-yellow 2s infinite;
-}
-
-/* أدوات البحث والفلترة */
-.controls {
-  display: grid;
-  grid-template-columns: 1fr 250px;
-  gap: 15px;
-  margin-bottom: 25px;
-}
-
-input, select {
-  width: 100%;
-  padding: 14px;
-  border: 2px solid #e5e7eb;
-  border-radius: 12px;
-  font-size: 16px;
-  box-sizing: border-box;
-  background: white;
-  outline: none;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-input:focus, select:focus {
-  border-color: #006C35;
-  box-shadow: 0 0 0 4px rgba(0, 108, 53, 0.1);
-  transform: translateY(-2px);
-}
-
-/* شبكة البطاقات */
-.doctor-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-}
-
-.doctor-card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  padding: 22px;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  animation: fadeInUp 0.6s ease-out forwards;
-}
-
-.doctor-card:hover {
-  /* تغيير لون الإطار للأخضر السعودي عند المرور */
-  border-color: #006C35 !important; 
-  
-  /* ظل ناعم بلمسة خضراء تقنية */
-  box-shadow: 0 12px 25px rgba(0, 108, 53, 0.15) !important;
-  
-  /* حركة الارتفاع للأعلى اللي تعطي طابع تفاعلي */
-  transform: translateY(-8px) scale(1.01);
-}
-
-.doctor-card h2 { margin-top: 0; color: #111827; font-size: 20px; }
-
-/* الأزرار - تحولت للأخضر */
-button {
-  width: 100%;
-  margin-top: 12px;
-  background: #006C35;
-  color: white;
-  border: none;
-  padding: 12px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 15px;
-  font-weight: bold;
-  transition: background 0.3s ease;
-}
-
-button:hover { background: #004d26; }
-
-/* تذييل الصفحة */
-.footer {
-  background-color: #111827;
-  color: #ffffff;
-  text-align: center;
-  padding: 35px 15px;
-  margin-top: 60px;
-  border-top: 4px solid #006C35;
-}
-
-.telegram-link {
-  display: inline-block;
-  margin-top: 18px;
-  color: #4ade80;
-  text-decoration: none;
-  font-size: 15px;
-  font-weight: bold;
-  padding: 10px 25px;
-  border: 2px solid #006C35;
-  border-radius: 30px;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.telegram-link:hover {
-  background-color: #006C35;
-  color: #ffffff;
-  transform: scale(1.05);
-  box-shadow: 0 0 15px rgba(0, 108, 53, 0.4);
-}
-
-/* الوضع الليلي الملكي (Dark Mode) */
-body.dark-theme {
-  background: #0b1120 !important;
-  color: #e5e7eb;
-}
-
-body.dark-theme .doctor-card,
-body.dark-theme .office-guide,
-body.dark-theme input,
-body.dark-theme select {
-  background: rgba(30, 41, 59, 0.8) !important;
-  color: #ffffff;
-  border-color: #374151;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-}
-
-body.dark-theme .doctor-card h2,
-body.dark-theme .header h1 {
-  background: linear-gradient(135deg, #4ade80, #006C35);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  display: inline-block;
-}
-
-/* الأنيميشن */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes pulse-yellow {
-  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7); }
-  70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(250, 204, 21, 0); }
-  100% { transform: scale(1); }
-}
-
-/* ميديا كويري */
-@media (max-width: 1024px) {
-  .doctor-list { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 700px) {
-  .doctor-list { grid-template-columns: 1fr; }
-  .controls { grid-template-columns: 1fr; }
-  .header h1 { font-size: 26px; }
-}
-
-.highlight-room {
-  background: #facc15;
-  font-weight: bold;
-  padding: 2px 6px;
-  border-radius: 4px;
-  color: #000;
-  display: inline-block;
-}
-
-.no-results-msg {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 40px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px dashed #d1d5db;
-    border-radius: 15px;
-    color: #6b7280;
-    font-size: 18px;
-    font-weight: bold;
-    margin-top: 20px;
-    animation: fadeInUp 0.5s ease;
-}
-
-body.dark-theme .no-results-msg {
-    border-color: #374151;
-    color: #9ca3af;
-}
-
-.theme-switch-wrapper {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 1100;
-}
-
-.en-mode { text-align: left !important; }
-.en-mode .doctor-card, .en-mode .office-guide, .en-mode .controls { text-align: left; }
-.en-mode .guide-item span { margin-right: 8px; margin-left: 0; }
-/* شاشة التحميل */
-#loader-wrapper {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: #ffffff;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  transition: opacity 0.5s ease;
-}
-
-.gear-loader {
-  font-size: 50px;
-  color: #006C35;
-  animation: gearSpin 2s linear infinite;
-}
-
-@keyframes gearSpin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-/* طبقة هندسية تقنية متحركة */
-.tech-bg-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /* رسم شبكة نقاط هندسية */
-    background-image: radial-gradient(#006C35 1.2px, transparent 1.2px);
-    background-size: 40px 40px;
-    opacity: 0.1;
-    z-index: -1; /* تكون فوق صورة الكلية وتحت الكلام */
-    pointer-events: none;
-    animation: moveGrid 120s linear infinite;
-}
-
-@keyframes moveGrid {
-    from { background-position: 0 0; }
-    to { background-position: 1000px 1000px; }
-}
-
-/* إضافات هندسية على زوايا البطاقة */
-.doctor-card {
+    font-family: 'IBM Plex Sans Arabic', 'Segoe UI', sans-serif;
+    background: #f5f7fb;
+    direction: rtl;
+    color: #1f2937;
+    min-height: 100vh;
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden; /* يمنع التمدد الجانبي */
 }
 
-.doctor-card::before {
+body::before {
     content: "";
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 15px;
-    height: 15px;
-    border-top: 3px solid #006C35;
-    border-right: 3px solid #006C35;
-    opacity: 0;
-    transition: all 0.3s ease;
-}
-
-.doctor-card:hover::before {
-    opacity: 1;
-    top: 10px;
-    right: 10px;
-}
-
-/* تأثير الإطار الملون عند الحوم */
-.doctor-card:hover {
-    border-color: #006C35 !important;
-    box-shadow: 0 10px 25px rgba(0, 108, 53, 0.15) !important;
-}
-
-/* خلفية شبكة الرسم الهندسي */
-.engineering-grid {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    /* رسم خطوط طولية وعرضية خفيفة */
-    background-image: 
-        linear-gradient(to right, rgba(0, 108, 53, 0.05) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(0, 108, 53, 0.05) 1px, transparent 1px);
-    background-size: 50px 50px; /* حجم المربع الهندسي */
+    background-image: url('college-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(3px);
+    opacity: 0.15;
     z-index: -1;
-    pointer-events: none;
 }
 
-/* الترس التفاعلي - نسخة الوضوح العالي */
-.floating-gear {
+#scroll-progress {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
-    font-size: 65px; /* كبرناه شوي */
-    color: #006C35 !important; /* أخضر سعودي صريح */
-    opacity: 0.9 !important; /* رفعنا الشفافية لأقصى حد عشان يبين */
-    z-index: 1000;
-    transition: all 0.5s ease;
-    animation: slowRotate 10s linear infinite;
-    pointer-events: none;
-    /* إضافة ظل عشان "يبرز" الترس فوق بياض الخلفية */
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.15));
+    top: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(to left, #006C35, #4ade80);
+    z-index: 5000;
+    width: 0%;
 }
 
-/* في الوضع الليلي نخليه فسفوري عشان ينور */
-body.dark-theme .floating-gear {
-    color: #4ade80 !important;
-    opacity: 0.8 !important;
-    filter: drop-shadow(0 0 10px rgba(74, 222, 128, 0.3));
+.container {
+    width: 90%;
+    max-width: 1100px;
+    margin: auto;
+    padding: 30px 0 20px; /* تقليل البادنج السفلي */
 }
 
-@keyframes slowRotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+/* =========================================
+   2. الترويسة (Header)
+   ========================================= */
+.header { text-align: center; margin-bottom: 30px; }
+.header h1 { font-weight: 700; font-size: 42px; color: #006C35; margin: 0; }
+.header p:first-of-type::after {
+    content: ""; display: block; width: 40px; height: 3px;
+    background: #006C35; margin: 15px auto; border-radius: 2px;
 }
 
-/* لما المستخدم يحرك الماوس على الموقع (اختياري عبر JS) أو عند الحوم */
-.floating-gear:hover {
-    opacity: 0.4;
-    animation-duration: 2s; /* يسرع الدوران لما تلمسه */
+/* =========================================
+   3. دليل الرموز (Office Guide) - استعادة الشكل
+   ========================================= */
+.office-guide {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    text-align: center;
 }
 
-/* زوايا القياس الهندسية عند الحوم */
-.doctor-card {
-    position: relative;
+.guide-items {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
-.doctor-card::after {
-    content: "L: 280mm"; /* لمسة هندسية */
-    position: absolute;
-    bottom: 5px;
-    left: 10px;
-    font-size: 10px;
-    color: #006C35;
-    font-family: monospace;
-    opacity: 0;
+.guide-item span {
+    background: #facc15;
+    color: #000;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-weight: bold;
+    margin-left: 8px;
+    display: inline-block;
+    animation: pulse-yellow 2s infinite;
+}
+
+/* =========================================
+   4. البحث والفلترة (Controls) - استعادة الشكل
+   ========================================= */
+.controls {
+    display: grid;
+    grid-template-columns: 1fr 250px;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+input, select {
+    width: 100%;
+    padding: 14px;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 16px;
+    background: white;
+    outline: none;
     transition: 0.3s;
 }
 
-.doctor-card:hover::after {
-    opacity: 0.5;
-}
-
-.doctor-card:hover {
-    border: 1px dashed #006C35 !important; /* إطار منقط كأنه خط مخفي في الرسم */
-    box-shadow: 0 0 20px rgba(0, 108, 53, 0.1);
-}
-
-/* علامات التحديد الهندسية في الزوايا */
-.corner-mark {
-    position: fixed;
-    width: 20px;
-    height: 20px;
+input:focus, select:focus {
     border-color: #006C35;
-    opacity: 0.15;
-    z-index: 500;
-    pointer-events: none;
+    box-shadow: 0 0 0 4px rgba(0, 108, 53, 0.1);
 }
 
-/* زاوية عليا يمنى */
-.mark-tr { top: 10px; right: 10px; border-top: 2px solid; border-right: 2px solid; }
-/* زاوية سفلى يسرى */
-.mark-bl { bottom: 10px; left: 10px; border-bottom: 2px solid; border-left: 2px solid; }
+/* =========================================
+   5. البطاقات (Doctor Cards)
+   ========================================= */
+.doctor-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
 
-/* تغيير لونهم في الوضع الليلي */
-body.dark-theme .corner-mark {
-    border-color: #4ade80;
+.doctor-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    padding: 22px;
+    border-radius: 20px;
+    border: 1px solid rgba(0, 108, 53, 0.1);
+    transition: 0.4s ease;
+    position: relative;
+}
+
+.doctor-card h2 { color: #006C35 !important; font-size: 20px; margin-top: 0; }
+
+.doctor-card button {
+    width: 100%; margin-top: 12px;
+    background-color: #006C35 !important;
+    color: white !important;
+    border: none; padding: 12px;
+    border-radius: 10px; font-weight: bold;
+    cursor: pointer;
+}
+
+/* =========================================
+   6. المنيو والترس (Settings Gear)
+   ========================================= */
+.settings-menu {
+    position: fixed;
+    bottom: 25px; right: 25px;
+    display: flex; flex-direction: column;
+    align-items: center; z-index: 4000;
+}
+
+.menu-options {
+    display: flex; flex-direction: column;
+    gap: 10px; margin-bottom: 15px;
+    opacity: 0; transform: translateY(20px);
+    transition: 0.4s; pointer-events: none;
+}
+
+.settings-menu.active .menu-options {
+    opacity: 1; transform: translateY(0); pointer-events: auto;
+}
+
+.menu-options button {
+    background-color: #006C35 !important;
+    color: white !important;
+    border: none; padding: 10px 20px;
+    border-radius: 25px; font-weight: bold;
+}
+
+.floating-gear {
+    font-size: 60px;
+    color: #006C35 !important;
+    cursor: pointer;
+    animation: slowRotate 10s linear infinite;
+    /* تأكد إنه ما يطلع بنص الشاشة */
+    position: static !important; 
+}
+
+/* =========================================
+   7. تذييل الصفحة (Footer)
+   ========================================= */
+.footer {
+    background-color: #111827;
+    color: #ffffff;
+    text-align: center;
+    padding: 30px 15px;
+    margin-top: 40px;
+    border-top: 5px solid #006C35;
+}
+
+/* زر تليجرام المضيء والتفاعلي */
+.telegram-link {
+    display: inline-block;
+    margin-top: 18px;
+    color: #4ade80 !important; /* أخضر فسفوري مضيء */
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 12px 30px;
+    border: 2px solid #006C35;
+    border-radius: 30px;
+    background-color: rgba(0, 108, 53, 0.1); /* خلفية خضراء شفافة */
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    /* التوهج المضيء (Glow Effect) */
+    box-shadow: 0 0 15px rgba(74, 222, 128, 0.3);
+    animation: buttonGlow 2s infinite; /* أنيميشن النبض المضيء */
+}
+
+.telegram-link:hover {
+    background-color: #006C35;
+    color: #ffffff !important;
+    transform: scale(1.08);
+    box-shadow: 0 0 25px rgba(74, 222, 128, 0.6);
+}
+
+/* أنيميشن النبض المضيء */
+@keyframes buttonGlow {
+    0% { box-shadow: 0 0 5px rgba(74, 222, 128, 0.2); }
+    50% { box-shadow: 0 0 20px rgba(74, 222, 128, 0.5); }
+    100% { box-shadow: 0 0 5px rgba(74, 222, 128, 0.2); }
+}
+
+/* =========================================
+   8. الوضع الليلي (Dark Theme)
+   ========================================= */
+body.dark-theme { background: #0b1120 !important; color: #e5e7eb; }
+body.dark-theme .doctor-card, body.dark-theme .office-guide {
+    background: rgba(30, 41, 59, 0.8) !important;
+}
+body.dark-theme .doctor-card h2, body.dark-theme .header h1 {
+    color: #4ade80 !important;
+}
+
+/* =========================================
+   9. الأنيميشن
+   ========================================= */
+@keyframes slowRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes pulse-yellow {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7); }
+    70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(250, 204, 21, 0); }
+    100% { transform: scale(1); }
+}
+
+/* الموبايل */
+@media (max-width: 700px) {
+    .controls { grid-template-columns: 1fr; }
+    .header h1 { font-size: 28px; }
+}
+
+/* =========================================
+   تعديلات منصور النهائية (العبارة الحمراء + النسخ + تليجرام)
+   ========================================= */
+
+/* 1. عبارة المبادرة الطلابية (الخلفية الحمراء المميزة) */
+.disclaimer {
+    display: inline-block !important;
+    margin-top: 15px !important;
+    padding: 10px 25px !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    color: #dc2626 !important; /* أحمر صريح */
+    background-color: #fef2f2 !important; /* خلفية حمراء باهتة */
+    border: 2px solid #fecaca !important; /* إطار أحمر خفيف */
+    border-radius: 50px !important;
+    line-height: 1.6 !important;
+    box-shadow: 0 4px 10px rgba(220, 38, 38, 0.1) !important;
+    text-align: center !important;
+}
+
+/* 2. أزرار النسخ داخل بطاقات الدكاترة (رجعتها خضراء صريحة) */
+.doctor-card button {
+    width: 100% !important;
+    margin-top: 12px !important;
+    background-color: #006C35 !important; /* أخضر سعودي */
+    color: white !important;
+    border: none !important;
+    padding: 12px !important;
+    border-radius: 10px !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    transition: 0.3s !important;
+}
+
+.doctor-card button:hover {
+    background-color: #004d26 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 5px 15px rgba(0, 108, 53, 0.2) !important;
+}
+
+/* 3. زر تليجرام المضيء (طلب التعديل) */
+.telegram-link {
+    display: inline-block !important;
+    margin-top: 18px !important;
+    color: #4ade80 !important; /* لون فسفوري مضيء */
+    text-decoration: none !important;
+    padding: 12px 30px !important;
+    border: 2px solid #006C35 !important;
+    border-radius: 30px !important;
+    background-color: rgba(0, 108, 53, 0.1) !important;
+    font-weight: bold !important;
+    box-shadow: 0 0 15px rgba(74, 222, 128, 0.3) !important;
+    animation: pulseGlow 2s infinite !important;
+}
+
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 5px rgba(74, 222, 128, 0.2); }
+    50% { box-shadow: 0 0 20px rgba(74, 222, 128, 0.5); }
+    100% { box-shadow: 0 0 5px rgba(74, 222, 128, 0.2); }
+}
+
+/* 4. إخفاء الترس "النشبة" اللي بوسط الصفحة */
+.gear-loader, .corner-gear, #loader-wrapper {
+    display: none !important;
+    height: 0 !important;
+    visibility: hidden !important;
 }
