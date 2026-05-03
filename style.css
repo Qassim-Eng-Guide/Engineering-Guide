@@ -1,10 +1,41 @@
-/* الإعدادات العامة للموقع */
+/* 1. التنسيق الأساسي للموقع */
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: #f5f7fb;
-  direction: rtl; 
+  direction: rtl;
   color: #1f2937;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* صورة الخلفية - تم إصلاح الشفافية لتناسب الوضعين */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('college-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: blur(3px);
+  opacity: 0.15; 
+  z-index: -1;
+}
+
+/* شريط تقدم القراءة */
+#scroll-progress {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(to left, #1d4ed8, #38bdf8);
+  z-index: 2000;
+  width: 0%;
+  transition: width 0.1s ease;
 }
 
 .container {
@@ -32,16 +63,13 @@ body {
   color: #6b7280;
 }
 
-/* جملة إخلاء المسؤولية - نسخة محسنة للظهور القوي */
 .disclaimer {
   display: inline-block;
   margin-top: 15px;
   padding: 8px 20px;
   font-size: 14px !important;
   font-weight: bold !important;
-  /* لون أحمر صريح جداً */
-  color: #dc2626 !important; 
-  /* خلفية فاتحة مع حدود حمراء */
+  color: #dc2626 !important;
   background-color: #fef2f2 !important;
   border: 2px solid #fecaca !important;
   border-radius: 50px;
@@ -57,10 +85,10 @@ body {
   margin-bottom: 25px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   text-align: center;
-  display: flex; 
+  display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%; 
+  width: 100%;
   box-sizing: border-box;
 }
 
@@ -79,22 +107,16 @@ body {
 }
 
 .guide-item span {
-  background: #facc15; 
+  background: #facc15;
   color: #000;
   padding: 4px 12px;
   border-radius: 6px;
   margin-left: 8px;
   display: inline-block;
-  animation: pulse-yellow 2s infinite; 
+  animation: pulse-yellow 2s infinite;
 }
 
-@keyframes pulse-yellow {
-  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7); }
-  70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(250, 204, 21, 0); }
-  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 204, 21, 0); }
-}
-
-/* أدوات البحث والفلترة */
+/* أدوات البحث والفلترة - تم دمج التحسينات العالمية هنا مباشرة */
 .controls {
   display: grid;
   grid-template-columns: 1fr 250px;
@@ -105,20 +127,22 @@ body {
 input, select {
   width: 100%;
   padding: 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
   font-size: 16px;
   box-sizing: border-box;
   background: white;
   outline: none;
-  transition: border-color 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 input:focus, select:focus {
   border-color: #1d4ed8;
+  box-shadow: 0 0 0 4px rgba(29, 78, 216, 0.15);
+  transform: translateY(-2px);
 }
 
-/* شبكة البطاقات */
+/* شبكة البطاقات - تأثير الزجاج مع أنيميشن شغال */
 .doctor-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -126,28 +150,25 @@ input:focus, select:focus {
 }
 
 .doctor-card {
-  background: white;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   padding: 22px;
-  border-radius: 16px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.05);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  /* تم إصلاح الأنيميشن ليعمل فوراً */
+  animation: fadeInUp 0.6s ease-out forwards;
 }
 
 .doctor-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 15px 45px rgba(0,0,0,0.1);
+  background: rgba(255, 255, 255, 0.95);
 }
 
-.doctor-card h2 {
-  margin-top: 0;
-  color: #111827;
-  font-size: 20px;
-}
-
-.doctor-card p {
-  margin: 8px 0;
-  line-height: 1.7;
-}
+.doctor-card h2 { margin-top: 0; color: #111827; font-size: 20px; }
 
 button {
   width: 100%;
@@ -163,9 +184,7 @@ button {
   transition: background 0.3s ease;
 }
 
-button:hover {
-  background: #1e40af;
-}
+button:hover { background: #1e40af; }
 
 /* تذييل الصفحة */
 .footer {
@@ -175,24 +194,6 @@ button:hover {
   padding: 35px 15px;
   margin-top: 60px;
   border-top: 4px solid #1d4ed8;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.footer-content {
-  width: 100%;
-}
-
-.footer-content p {
-  margin: 5px 0;
-  font-size: 14px;
-  opacity: 0.9;
-}
-
-.footer-content strong {
-  color: #38bdf8;
 }
 
 .telegram-link {
@@ -206,6 +207,8 @@ button:hover {
   border: 2px solid #38bdf8;
   border-radius: 30px;
   transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .telegram-link:hover {
@@ -215,125 +218,79 @@ button:hover {
   box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
 }
 
-/* ميديا كويري (الايباد) */
-@media (min-width: 701px) and (max-width: 1024px) {
-  .doctor-list {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-/* ميديا كويري (الجوال) */
-@media (max-width: 700px) {
-  .controls {
-    grid-template-columns: 1fr;
-  }
-  
-  .header h1 {
-    font-size: 26px;
-  }
-
-  .guide-items {
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-}
-
-/* تمييز الحروف داخل البطاقة */
-.highlight-room {
-  background: #facc15; 
-  font-weight: bold;
-  padding: 2px 6px;
-  border-radius: 4px;
-  color: #000;
-  display: inline-block;
-  margin: 0 2px;
-}
-/* تنسيق زر تبديل الوضع */
-.theme-switch-wrapper {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    z-index: 1100;
-}
-
-.dark-mode-btn {
-    background: #1d4ed8;
-    color: white;
-    border: none;
-    padding: 8px 18px;
-    border-radius: 25px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    width: auto;
-    transition: all 0.3s ease;
-}
-
-.dark-mode-btn:hover {
-    transform: scale(1.05);
-    background: #1e40af;
-}
-
-/* ألوان الوضع الليلي (Dark Mode) */
+/* الوضع الليلي الملكي (Dark Mode) */
 body.dark-theme {
-    background: #121212;
-    color: #e5e7eb;
+  background: #0b1120 !important;
+  color: #e5e7eb;
 }
 
 body.dark-theme .doctor-card,
 body.dark-theme .office-guide,
 body.dark-theme input,
 body.dark-theme select {
-    background: #1e1e1e;
-    color: #ffffff;
-    border-color: #374151;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  background: rgba(30, 41, 59, 0.8) !important;
+  color: #ffffff;
+  border-color: #374151;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
 }
 
-body.dark-theme .doctor-card h2, 
+body.dark-theme .doctor-card h2,
 body.dark-theme .header h1 {
-    color: #38bdf8; /* أزرق سماوي مريح للعين ليلاً */
+  background: linear-gradient(135deg, #38bdf8, #818cf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block;
 }
 
-body.dark-theme .disclaimer {
-    background: #2d1a1a;
-    border-color: #442222;
-    color: #f87171 !important;
+/* الأنيميشن */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* الحفاظ على وضوح التمييز الأصفر في الوضع الليلي */
-body.dark-theme .highlight-room {
-    background: #facc15;
-    color: #000;
+@keyframes pulse-yellow {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(250, 204, 21, 0); }
+  100% { transform: scale(1); }
 }
 
-body {
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    position: relative;
-    background-color: #f4f7f6; /* لون احتياطي */
+/* ميديا كويري للجوال والايباد */
+@media (max-width: 1024px) {
+  .doctor-list { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* كود الخلفية المطور لضمان الظهور */
-body::before {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    /* استدعاء الصورة بالاسم الجديد */
-    background-image: url('college-bg.jpg'); 
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    /* تخفيف الضبابية لتكون أوضح */
-    filter: blur(3px); 
-    -webkit-filter: blur(3px);
-    /* الشفافية لضمان وضوح البطاقات */
-    opacity: 0.3; 
-    z-index: -1;
+@media (max-width: 700px) {
+  .doctor-list { grid-template-columns: 1fr; }
+  .controls { grid-template-columns: 1fr; }
+  .header h1 { font-size: 26px; }
 }
+
+.highlight-room {
+  background: #facc15;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #000;
+  display: inline-block;
+}
+
+/* تنسيق رسالة التنبيه عند عدم وجود نتائج */
+.no-results-msg {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px dashed #d1d5db;
+    border-radius: 15px;
+    color: #6b7280;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 20px;
+    animation: fadeInUp 0.5s ease;
+}
+
+body.dark-theme .no-results-msg {
+    border-color: #374151;
+    color: #9ca3af;
+}
+

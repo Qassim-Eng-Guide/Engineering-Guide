@@ -23,28 +23,50 @@ if (darkModeToggle) {
     };
 }
 
-// 4. دالة البحث والفلترة
+// 4. دالة البحث والفلترة (تم تحديثها لإظهار رسالة عند عدم وجود نتائج)
 function filterDoctors() {
     var searchInput = document.getElementById('searchInput').value.toLowerCase();
     var specialtyFilter = document.getElementById('specialtyFilter').value;
     var cards = document.getElementsByClassName('doctor-card');
+    var doctorList = document.querySelector('.doctor-list');
+    var visibleCount = 0;
+
+    // حذف الرسالة السابقة إذا كانت موجودة عشان ما تتكرر
+    var existingMsg = document.querySelector('.no-results-msg');
+    if (existingMsg) existingMsg.remove();
 
     for (var i = 0; i < cards.length; i++) {
-        // نجلب نص التخصصات بالكامل من البطاقة
         var doctorSpecialtyData = cards[i].getAttribute('data-specialty') || "";
         var name = cards[i].getAttribute('data-name').toLowerCase();
         
-        // فحص التخصص: ينجح إذا كان الخيار "الكل" أو إذا كان التخصص المختار موجوداً ضمن بيانات الدكتور
         var matchesSpecialty = (specialtyFilter === 'all' || doctorSpecialtyData.includes(specialtyFilter));
         var matchesSearch = name.includes(searchInput);
 
         if (matchesSearch && matchesSpecialty) {
             cards[i].style.display = "block";
+            visibleCount++; // نحسب الدكاترة اللي طلعوا في البحث
         } else {
             cards[i].style.display = "none";
         }
     }
+
+    // إذا ما فيه أحد طلع (يعني البحث صفر)
+    if (visibleCount === 0) {
+        var msg = document.createElement('div');
+        msg.className = 'no-results-msg';
+        msg.innerHTML = "⚠️ عذراً، لا يوجد دكتور بهذا الاسم - تواصل معنا في حال لم نضع اسم الدكتور.";
+        doctorList.appendChild(msg);
+    }
 }
+
+// إضافة كود لتحديث شريط التقدم عند التمرير (عشان يشتغل الخط اللي فوق)
+window.addEventListener('scroll', function() {
+    var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+    var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    var scrolled = (winScroll / height) * 100;
+    var scrollProgress = document.getElementById("scroll-progress");
+    if (scrollProgress) scrollProgress.style.width = scrolled + "%";
+});
 
 // 5. دالة نسخ الإيميل
 function copyEmail(email) {
@@ -68,3 +90,4 @@ function copyFullInfo(name, major, office, email) {
     document.body.removeChild(tempTextArea);
     alert("تم نسخ جميع بيانات " + name + " بنجاح!");
 }
+
