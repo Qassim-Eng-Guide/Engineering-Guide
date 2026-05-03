@@ -30,11 +30,13 @@ function filterDoctors() {
     var cards = document.getElementsByClassName('doctor-card');
 
     for (var i = 0; i < cards.length; i++) {
+        // نجلب نص التخصصات بالكامل من البطاقة
+        var doctorSpecialtyData = cards[i].getAttribute('data-specialty') || "";
         var name = cards[i].getAttribute('data-name').toLowerCase();
-        var specialty = cards[i].getAttribute('data-specialty');
         
-        var matchesSearch = name.indexOf(searchInput) > -1;
-        var matchesSpecialty = (specialtyFilter === 'all' || specialty === specialtyFilter);
+        // فحص التخصص: ينجح إذا كان الخيار "الكل" أو إذا كان التخصص المختار موجوداً ضمن بيانات الدكتور
+        var matchesSpecialty = (specialtyFilter === 'all' || doctorSpecialtyData.includes(specialtyFilter));
+        var matchesSearch = name.includes(searchInput);
 
         if (matchesSearch && matchesSpecialty) {
             cards[i].style.display = "block";
