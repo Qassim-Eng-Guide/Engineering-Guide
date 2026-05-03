@@ -317,6 +317,7 @@ body {
     background-color: #f4f7f6; /* لون احتياطي */
 }
 
+/* كود الخلفية المطور لضمان الظهور */
 body::before {
     content: "";
     position: fixed;
@@ -324,14 +325,15 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    /* تأكد أن اسم الصورة مطابق للموجود عندك بالمجلد */
+    /* استدعاء الصورة بالاسم الجديد */
     background-image: url('college-bg.jpg'); 
     background-size: cover;
     background-position: center;
-    /* تم تخفيف الضبابية هنا لتكون الصورة أوضح */
+    background-repeat: no-repeat;
+    /* تخفيف الضبابية لتكون أوضح */
     filter: blur(3px); 
     -webkit-filter: blur(3px);
-    /* يمكنك رفع الشفافية قليلاً إذا أردت الصورة أغمق أو أفتح */
-    opacity: 0.25; 
+    /* الشفافية لضمان وضوح البطاقات */
+    opacity: 0.3; 
     z-index: -1;
 }
