@@ -133,3 +133,17 @@ function copyFullInfo(name, major, office, email) {
         alert(currentLang === 'ar' ? "تم نسخ البيانات بنجاح!" : "Info Copied Successfully!");
     });
 }
+
+window.addEventListener('load', function() {
+    const loader = document.getElementById('loader-wrapper');
+    loader.style.opacity = '0';
+    setTimeout(() => { loader.style.display = 'none'; }, 600);
+});
+
+window.addEventListener('load', function() {
+    const loader = document.getElementById('loader-wrapper');
+    if (loader) {
+        loader.style.opacity = '0';
+        setTimeout(() => { loader.style.display = 'none'; }, 500);
+    }
+});
