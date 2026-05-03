@@ -1,29 +1,82 @@
-// 1. تعريف المتغيرات بشكل عام لسهولة الوصول
+// 1. تعريف المتغيرات الأساسية
 var darkModeToggle = document.getElementById('darkModeToggle');
 var body = document.body;
+let currentLang = 'ar';
 
-// 2. فحص التفضيل المحفوظ وتشغيله فوراً
+// 2. فحص التفضيل المحفوظ للوضع الليلي
 if (localStorage.getItem('theme') === 'dark') {
     body.classList.add('dark-theme');
     if (darkModeToggle) darkModeToggle.textContent = '☀️ الوضع النهاري';
 }
 
-// 3. وظيفة التبديل (طريقة مباشرة متوافقة مع سفاري)
+// 3. وظيفة التبديل (الوضع الليلي)
 if (darkModeToggle) {
     darkModeToggle.onclick = function() {
-        if (body.classList.contains('dark-theme')) {
-            body.classList.remove('dark-theme');
-            localStorage.setItem('theme', 'light');
-            darkModeToggle.textContent = '🌙 الوضع الليلي';
-        } else {
-            body.classList.add('dark-theme');
-            localStorage.setItem('theme', 'dark');
-            darkModeToggle.textContent = '☀️ الوضع النهاري';
-        }
+        body.classList.toggle('dark-theme');
+        const isDark = body.classList.contains('dark-theme');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        darkModeToggle.textContent = isDark ? '☀️ الوضع النهاري' : '🌙 الوضع الليلي';
     };
 }
 
-// 4. دالة البحث والفلترة (تم تحديثها لإظهار رسالة عند عدم وجود نتائج)
+// 4. نظام الترجمة الشامل
+const translations = {
+    ar: {
+        title: "كلية الهندسة",
+        subtitle: "جامعة القصيم",
+        disclaimer: "هذا الموقع مبادرة طلابية لتسهيل التواصل مع الدكتور وليس جهة رسمية تابعة للكلية.",
+        guideTitle: "دليل الرموز :",
+        searchPlholder: "ابحث باسم الدكتور...",
+        langBtn: "🌐 English",
+        noResults: "⚠️ عذراً، لا يوجد دكتور بهذا الاسم - تواصل معنا لإضافته."
+    },
+    en: {
+        title: "College of Engineering",
+        subtitle: "Qassim University",
+        disclaimer: "Student initiative to facilitate communication, not an official faculty entity.",
+        guideTitle: "Office Guide:",
+        searchPlholder: "Search by doctor name...",
+        langBtn: "🌐 العربية",
+        noResults: "⚠️ Sorry, no doctor found with this name - Contact us to add it."
+    }
+};
+
+function toggleLanguage() {
+    currentLang = currentLang === 'ar' ? 'en' : 'ar';
+    
+    // أ. تحديث النصوص الثابتة
+    document.querySelector('.header h1').innerText = translations[currentLang].title;
+    document.querySelector('.header p:nth-of-type(1)').innerText = translations[currentLang].subtitle;
+    document.querySelector('.disclaimer').innerText = translations[currentLang].disclaimer;
+    document.querySelector('.office-guide h3').innerText = translations[currentLang].guideTitle;
+    document.getElementById('searchInput').placeholder = translations[currentLang].searchPlholder;
+    document.getElementById('langToggle').innerText = translations[currentLang].langBtn;
+
+    // ب. ترجمة العناصر التي تحمل كلاس translate
+    document.querySelectorAll('.translate').forEach(el => {
+        const text = el.getAttribute(`data-${currentLang}`);
+        if (text) el.innerText = text;
+    });
+
+    // ج. ترجمة أسماء الدكاترة داخل البطاقات
+    document.querySelectorAll('.doctor-card').forEach(card => {
+        const nameAr = card.getAttribute('data-name');
+        const nameEn = card.getAttribute('data-name-en');
+        const nameEl = card.querySelector('h2');
+        if (nameEl && nameEn) {
+            nameEl.innerText = currentLang === 'ar' ? nameAr : nameEn;
+        }
+    });
+
+    // د. تغيير اتجاه الموقع
+    body.style.direction = currentLang === 'ar' ? 'rtl' : 'ltr';
+    currentLang === 'en' ? body.classList.add('en-mode') : body.classList.remove('en-mode');
+    
+    // إعادة تشغيل الفلترة لتحديث رسالة "لا يوجد نتائج" باللغة الجديدة
+    filterDoctors();
+}
+
+// 5. دالة البحث والفلترة (مطورة تدعم اللغتين)
 function filterDoctors() {
     var searchInput = document.getElementById('searchInput').value.toLowerCase();
     var specialtyFilter = document.getElementById('specialtyFilter').value;
@@ -31,35 +84,35 @@ function filterDoctors() {
     var doctorList = document.querySelector('.doctor-list');
     var visibleCount = 0;
 
-    // حذف الرسالة السابقة إذا كانت موجودة عشان ما تتكرر
     var existingMsg = document.querySelector('.no-results-msg');
     if (existingMsg) existingMsg.remove();
 
     for (var i = 0; i < cards.length; i++) {
-        var doctorSpecialtyData = cards[i].getAttribute('data-specialty') || "";
-        var name = cards[i].getAttribute('data-name').toLowerCase();
+        var specialty = cards[i].getAttribute('data-specialty') || "";
+        var nameAr = (cards[i].getAttribute('data-name') || "").toLowerCase();
+        var nameEn = (cards[i].getAttribute('data-name-en') || "").toLowerCase();
         
-        var matchesSpecialty = (specialtyFilter === 'all' || doctorSpecialtyData.includes(specialtyFilter));
-        var matchesSearch = name.includes(searchInput);
+        var matchesSpecialty = (specialtyFilter === 'all' || specialty === specialtyFilter);
+        // يبحث في الاسمين العربي والانجليزي معاً لراحة المستخدم
+        var matchesSearch = nameAr.includes(searchInput) || nameEn.includes(searchInput);
 
         if (matchesSearch && matchesSpecialty) {
             cards[i].style.display = "block";
-            visibleCount++; // نحسب الدكاترة اللي طلعوا في البحث
+            visibleCount++;
         } else {
             cards[i].style.display = "none";
         }
     }
 
-    // إذا ما فيه أحد طلع (يعني البحث صفر)
     if (visibleCount === 0) {
         var msg = document.createElement('div');
         msg.className = 'no-results-msg';
-        msg.innerHTML = "⚠️ عذراً لابوبو، لا يوجد دكتور بهذا الاسم - تواصل معنا في حال لم نضع اسم الدكتور.";
+        msg.innerHTML = translations[currentLang].noResults;
         doctorList.appendChild(msg);
     }
 }
 
-// إضافة كود لتحديث شريط التقدم عند التمرير (عشان يشتغل الخط اللي فوق)
+// 6. شريط تقدم القراءة والنسخ
 window.addEventListener('scroll', function() {
     var winScroll = document.body.scrollTop || document.documentElement.scrollTop;
     var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -68,26 +121,15 @@ window.addEventListener('scroll', function() {
     if (scrollProgress) scrollProgress.style.width = scrolled + "%";
 });
 
-// 5. دالة نسخ الإيميل
 function copyEmail(email) {
-    var tempInput = document.createElement("input");
-    tempInput.value = email;
-    document.body.appendChild(tempInput);
-    tempInput.select();
-    document.execCommand("copy");
-    document.body.removeChild(tempInput);
-    alert("تم نسخ الإيميل: " + email);
+    navigator.clipboard.writeText(email).then(() => {
+        alert(currentLang === 'ar' ? "تم نسخ الإيميل: " : "Email Copied: " + email);
+    });
 }
 
-// 6. دالة نسخ البيانات الكاملة
 function copyFullInfo(name, major, office, email) {
-    var fullText = "معلومات التواصل مع الدكتور:\nالاسم: " + name + "\nالتخصص: " + major + "\nالمكتب: " + office + "\nالإيميل: " + email;
-    var tempTextArea = document.createElement("textarea");
-    tempTextArea.value = fullText;
-    document.body.appendChild(tempTextArea);
-    tempTextArea.select();
-    document.execCommand("copy");
-    document.body.removeChild(tempTextArea);
-    alert("تم نسخ جميع بيانات " + name + " بنجاح!");
+    var fullText = `Name: ${name}\nMajor: ${major}\nOffice: ${office}\nEmail: ${email}`;
+    navigator.clipboard.writeText(fullText).then(() => {
+        alert(currentLang === 'ar' ? "تم نسخ البيانات بنجاح!" : "Info Copied Successfully!");
+    });
 }
-

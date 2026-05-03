@@ -45,22 +45,48 @@ body::before {
   padding: 30px 0 50px;
 }
 
-/* ترويسة الصفحة (Header) */
+/* تنسيق الترويسة بخط ثمانية */
 .header {
-  text-align: center;
-  margin-bottom: 20px;
+    text-align: center;
+    margin-bottom: 40px;
 }
 
 .header h1 {
-  margin: 0;
-  color: #1d4ed8;
-  font-size: 32px;
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
+    font-weight: 700; /* الوزن العريض المشهورين فيه */
+    font-size: 42px;
+    color: #1d4ed8;
+    margin: 0;
+    letter-spacing: -0.5px;
 }
 
-.header p {
-  margin-top: 8px;
-  font-size: 18px;
-  color: #6b7280;
+.header p:nth-of-type(1) {
+    font-family: 'IBM Plex Sans Arabic', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    color: #6b7280;
+    margin-top: 5px;
+}
+
+/* نقل الخط ليكون تحت جامعة القصيم مباشرة وليس تحت إخلاء المسؤولية */
+.header p:first-of-type::after {
+    content: "";
+    display: block;
+    width: 40px;
+    height: 3px;
+    background: #1d4ed8;
+    margin: 15px auto; /* يضيف مسافة 15 بكسل */
+    border-radius: 2px;
+}
+
+/* حذف أي خط قديم كان طالع تحت الهيدر كامل */
+.header::after {
+    display: none !important;
+}
+
+/* الوضع الليلي للخط */
+body.dark-theme .header h1 {
+    color: #38bdf8;
 }
 
 .disclaimer {
@@ -294,3 +320,28 @@ body.dark-theme .no-results-msg {
     color: #9ca3af;
 }
 
+.theme-switch-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* مسافة بين زر اللغة وزر الليل */
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1100;
+}
+
+.en-mode {
+    text-align: left !important;
+}
+
+.en-mode .doctor-card, 
+.en-mode .office-guide, 
+.en-mode .controls {
+    text-align: left;
+}
+
+/* تعديل المسافات في الرموز عند التحويل للإنجليزي */
+.en-mode .guide-item span {
+    margin-right: 8px;
+    margin-left: 0;
+}
