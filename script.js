@@ -259,33 +259,36 @@ if (sInput) {
         recognition.interimResults = false; // يظهر النتيجة النهائية فقط لسرعة الأداء
 
         vBtn.onclick = (e) => {
-            e.preventDefault(); // منع أي تصرف افتراضي قد يعطل الميكروفون
+            e.preventDefault(); 
             try {
                 recognition.start();
                 vBtn.classList.add('listening');
                 vWaves.style.display = 'flex';
             } catch (err) {
-                // في حال كان الميكروفون يعمل مسبقاً، يقوم بإعادة تشغيله
                 recognition.stop();
             }
         };
 
         recognition.onresult = (e) => {
             const transcript = e.results[0][0].transcript;
-            sInput.value = transcript; // يضع النص في البوكس
+            sInput.value = transcript.trim(); // يضع النص المنقح في البوكس
 
-            // السطر السحري اللي يخلي الدكاترة يظهرون فوراً:
+            // 1. إيقاف المايك فوراً يدوياً بعد الحصول على النتيجة
+            recognition.stop(); 
+
+            // 2. تحديث الفلترة لظهور بطاقة الدكتور فوراً
             filterDoctors(); 
             
-            // اختياري: إرسال تنبيه للمتصفح بأن القيمة تغيرت (لضمان التوافق)
-            sInput.dispatchEvent(new Event('input'));
+            // 3. إرسال تنبيه للمتصفح بأن القيمة تغيرت (لضمان توافق الفلترة)
+            sInput.dispatchEvent(new Event('input', { bubbles: true }));
         };
 
         recognition.onend = () => {
+            // تنظيف الأشكال والوميض عند توقف المايك
             vBtn.classList.remove('listening');
             vWaves.style.display = 'none';
         };
     } else {
-        vBtn.style.display = 'none'; // إخفاء الزر إذا كان المتصفح لا يدعم الميزة
+        vBtn.style.display = 'none';
     }
 }
