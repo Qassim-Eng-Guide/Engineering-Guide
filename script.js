@@ -272,8 +272,13 @@ if (sInput) {
 
         recognition.onresult = (e) => {
             const transcript = e.results[0][0].transcript;
-            sInput.value = transcript;
-            filterDoctors(); // فلترة تلقائية بعد تحويل الصوت لنص
+            sInput.value = transcript; // يضع النص في البوكس
+
+            // السطر السحري اللي يخلي الدكاترة يظهرون فوراً:
+            filterDoctors(); 
+            
+            // اختياري: إرسال تنبيه للمتصفح بأن القيمة تغيرت (لضمان التوافق)
+            sInput.dispatchEvent(new Event('input'));
         };
 
         recognition.onend = () => {
