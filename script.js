@@ -235,7 +235,7 @@ if (telBtn) {
     });
 }
 
-// إضافة ميزة البحث الصوتي (Voice Search) المحدثة
+// إضافة ميزة البحث الصوتي (Voice Search) المحدثة بالكامل
 const sInput = document.getElementById('searchInput');
 if (sInput) {
     const wrap = document.createElement('div');
@@ -253,7 +253,9 @@ if (sInput) {
 
     if (Recog) {
         const recognition = new Recog();
-        recognition.lang = 'ar-SA';
+        
+        // حل المشكلة الأولى: ضبط اللغة العربية السعودية بشكل صارم
+        recognition.lang = 'ar-SA'; 
         recognition.continuous = false; 
         recognition.interimResults = false;
 
@@ -272,28 +274,26 @@ if (sInput) {
             const transcript = e.results[0][0].transcript.trim();
             sInput.value = transcript;
 
-            // 1. إيقاف الميكروفون فوراً وبشكل إجباري
+            // حل المشكلة الثانية: إيقاف الميكروفون فوراً يدوياً
             recognition.stop(); 
 
-            // 2. محاكاة حدث الكتابة لإجبار دالة filterDoctors على العمل
-            // نستخدم 'input' و 'keyup' لضمان أن الفلترة تشعر بالتغيير
-            sInput.dispatchEvent(new Event('input', { bubbles: true }));
-            sInput.dispatchEvent(new Event('keyup', { bubbles: true }));
-
-            // 3. استدعاء مباشر للدالة للتأكد من ظهور البطاقة
+            // حل المشكلة الثالثة: إجبار الفلترة على العمل فوراً بكافة الطرق
             if (typeof filterDoctors === "function") {
+                // إرسال تنبيه للمتصفح بأن القيمة تغيرت
+                sInput.dispatchEvent(new Event('input', { bubbles: true }));
+                // تشغيل الدالة مباشرة لضمان ظهور البطاقة
                 filterDoctors();
             }
         };
 
-        // التأكد من إغلاق المظاهر البصرية فور توقف المايك
+        // التأكد من إطفاء الأنوار والموجات فور انتهاء الكلام أو الخطأ
         recognition.onend = () => {
             vBtn.classList.remove('listening');
             vWaves.style.display = 'none';
         };
 
-        // في حال حدوث خطأ، يتم إغلاق المايك تلقائياً
-        recognition.onerror = () => {
+        recognition.onerror = (event) => {
+            console.error("خطأ في الميكروفون: ", event.error);
             recognition.stop();
             vBtn.classList.remove('listening');
             vWaves.style.display = 'none';
