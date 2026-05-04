@@ -95,7 +95,10 @@ function toggleLanguage() {
 
 // 6. دالة البحث والفلترة
 function filterDoctors() {
-    var searchInput = document.getElementById('searchInput').value.toLowerCase();
+    var searchInputEl = document.getElementById('searchInput');
+    if (!searchInputEl) return;
+    
+    var searchInput = searchInputEl.value.toLowerCase();
     var specialtyFilter = document.getElementById('specialtyFilter').value;
     var cards = document.getElementsByClassName('doctor-card');
     var doctorList = document.querySelector('.doctor-list');
@@ -128,6 +131,12 @@ function filterDoctors() {
     }
 }
 
+// إضافة مستمع حدث دائم للتغير في شريط البحث (يحل مشكلة عدم ظهور البطاقة)
+const searchInputOriginal = document.getElementById('searchInput');
+if (searchInputOriginal) {
+    searchInputOriginal.addEventListener('input', filterDoctors);
+}
+
 // 7. شريط التقدم
 window.addEventListener('scroll', function() {
     var winScroll = body.scrollTop || document.documentElement.scrollTop;
@@ -138,7 +147,6 @@ window.addEventListener('scroll', function() {
 });
 
 // 8. وظائف النسخ المعدلة
-// أ. دالة نسخ الإيميل المنفردة
 function copyEmail(email) {
     navigator.clipboard.writeText(email).then(() => {
         const msg = currentLang === 'ar' ? "تم نسخ الإيميل بنجاح!" : "Email Copied Successfully!";
@@ -148,7 +156,6 @@ function copyEmail(email) {
     });
 }
 
-// ب. دالة نسخ المعلومات الكاملة
 function copyFullInfo(name, major, office, email) {
     const header = currentLang === 'ar' ? "معلومات التواصل مع الدكتور:" : "Doctor Contact Information:";
     const fullText = `${header}\nالاسم: ${name}\nالتخصص: ${major}\nالمكتب: ${office}\nالإيميل: ${email}`;
@@ -161,7 +168,7 @@ function copyFullInfo(name, major, office, email) {
     });
 }
 
-// 9. منطق سحب وتحريك الترس (متوافق مع جميع المتصفحات)
+// 9. منطق سحب وتحريك الترس
 const menuContainer = document.querySelector('.settings-menu');
 let isDragging = false;
 let currentX, currentY, initialX, initialY;
@@ -213,22 +220,12 @@ function drag(e) {
 
 // تشغيل وميض التليجرام الانفجاري
 const telBtn = document.querySelector('.telegram-link');
-
 if (telBtn) {
     telBtn.addEventListener('click', function(e) {
-        // 1. إزالة الكلاس أولاً لضمان إمكانية تكرار الضغط
         this.classList.remove('active-flash');
-        
-        // 2. إيقاف أنيميشن النبض مؤقتاً
         this.style.animation = 'none';
-        
-        // 3. حركة سحرية (إجبار المتصفح على إعادة الحساب)
         void this.offsetWidth; 
-        
-        // 4. إضافة كلاس الوميض القوي
         this.classList.add('active-flash');
-        
-        // 5. بعد انتهاء الوميض (0.5 ثانية) نرجع النبض العادي
         setTimeout(() => {
             this.style.animation = 'telegramPulse 2s infinite';
         }, 500);
@@ -253,8 +250,6 @@ if (sInput) {
 
     if (Recog) {
         const recognition = new Recog();
-        
-        // حل المشكلة الأولى: ضبط اللغة العربية السعودية بشكل صارم
         recognition.lang = 'ar-SA'; 
         recognition.continuous = false; 
         recognition.interimResults = false;
@@ -270,34 +265,29 @@ if (sInput) {
             }
         };
 
-       // --- استبدل من هنا ---
-recognition.onresult = (e) => {
+        recognition.onresult = (e) => {
             const transcript = e.results[0][0].transcript.trim();
             sInput.value = transcript;
 
-            // 1. إيقاف المايك فوراً
             recognition.stop(); 
 
-            // 2. إرسال سلسلة تنبيهات شاملة لإجبار الموقع على التحديث
+            // إرسال سلسلة تنبيهات شاملة لإجبار الموقع على التحديث
             const events = ['input', 'change', 'keyup', 'blur'];
             events.forEach(evt => {
                 sInput.dispatchEvent(new Event(evt, { bubbles: true }));
             });
 
-            // 3. محاكاة الضغط على "Enter" برمجياً (هذه الحركة غالباً تحل مشكلة عدم ظهور البطاقة)
+            // محاكاة الضغط على "Enter"
             const enterEvent = new KeyboardEvent('keydown', {
                 bubbles: true, cancelable: true, keyCode: 13, key: 'Enter'
             });
             sInput.dispatchEvent(enterEvent);
 
-            // 4. استدعاء مباشر وأخير للدالة
-            if (typeof filterDoctors === "function") {
-                filterDoctors();
-            }
+            // استدعاء مباشر وأخير للدالة
+            filterDoctors();
         };
 
         recognition.onend = () => {
-            // إغلاق الواجهة البصرية والتأكد من إطفاء المايك في النظام
             vBtn.classList.remove('listening');
             vWaves.style.display = 'none';
             recognition.stop(); 
@@ -308,7 +298,6 @@ recognition.onresult = (e) => {
             vBtn.classList.remove('listening');
             vWaves.style.display = 'none';
         };
-// --- إلى هنا ---
     } else {
         vBtn.style.display = 'none';
     }
