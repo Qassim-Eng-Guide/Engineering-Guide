@@ -274,26 +274,29 @@ if (sInput) {
             const transcript = e.results[0][0].transcript.trim();
             sInput.value = transcript;
 
-            // حل المشكلة الثانية: إيقاف الميكروفون فوراً يدوياً
+            // 1. إيقاف الميكروفون فوراً يدوياً
             recognition.stop(); 
 
-            // حل المشكلة الثالثة: إجبار الفلترة على العمل فوراً بكافة الطرق
+            // 2. إجبار المتصفح على تشغيل الفلترة وإظهار البطاقة
+            // نرسل تنبيه 'input' مع خاصية bubbles لضمان وصول التنبيه للدالة
+            sInput.dispatchEvent(new Event('input', { bubbles: true }));
+            
+            // 3. استدعاء مباشر لدالة الفلترة لضمان ظهور البطاقة فوراً
             if (typeof filterDoctors === "function") {
-                // إرسال تنبيه للمتصفح بأن القيمة تغيرت
-                sInput.dispatchEvent(new Event('input', { bubbles: true }));
-                // تشغيل الدالة مباشرة لضمان ظهور البطاقة
                 filterDoctors();
             }
         };
 
         // التأكد من إطفاء الأنوار والموجات فور انتهاء الكلام أو الخطأ
+ // التأكد من إيقاف الواجهة البصرية فور توقف المايك
         recognition.onend = () => {
             vBtn.classList.remove('listening');
             vWaves.style.display = 'none';
+            recognition.stop(); // إغلاق إضافي لضمان قطع الإشارة
         };
 
-        recognition.onerror = (event) => {
-            console.error("خطأ في الميكروفون: ", event.error);
+        // إغلاق المايك في حال حدوث خطأ (مثل عدم سماع صوت)
+        recognition.onerror = () => {
             recognition.stop();
             vBtn.classList.remove('listening');
             vWaves.style.display = 'none';
