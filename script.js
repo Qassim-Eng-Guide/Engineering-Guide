@@ -98,7 +98,8 @@ function filterDoctors() {
     var searchInputEl = document.getElementById('searchInput');
     if (!searchInputEl) return;
     
-    var searchInput = searchInputEl.value.toLowerCase().trim(); // إضافة trim لتنظيف المسافات
+    // تنظيف النص تماماً من أي مسافات أو نقط زائدة في النهاية
+    var searchInput = searchInputEl.value.toLowerCase().trim().replace(/\.$/, "");
     var specialtyFilter = document.getElementById('specialtyFilter').value;
     var cards = document.getElementsByClassName('doctor-card');
     var doctorList = document.querySelector('.doctor-list');
@@ -229,7 +230,6 @@ if (telBtn) {
 // 10. إضافة ميزة البحث الصوتي (Voice Search) المحدثة بالكامل
 const sInputManual = document.getElementById('searchInput');
 if (sInputManual) {
-    // تفعيل البحث اليدوي عند الكتابة
     sInputManual.addEventListener('input', filterDoctors);
 
     const wrap = document.createElement('div');
@@ -243,10 +243,11 @@ if (sInputManual) {
 
     const vBtn = document.getElementById('voiceSearchBtn');
     const vWaves = document.querySelector('.voice-waves');
-    const Recog = window.SpeechRecognition || window.webkitSpeechRecognition;
+    // دعم أفضل للمتصفحات (سفاري، كروم)
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-    if (Recog) {
-        const recognition = new Recog();
+    if (SpeechRec) {
+        const recognition = new SpeechRec();
         recognition.lang = 'ar-SA'; 
         recognition.continuous = false; 
         recognition.interimResults = false;
@@ -263,26 +264,22 @@ if (sInputManual) {
         };
 
         recognition.onresult = (e) => {
-            const transcript = e.results[0][0].transcript.trim();
-            sInputManual.value = transcript;
+            // تنظيف النص فوراً من المسافات والنقطة التي قد يضيفها النظام في النهاية
+            let resultText = e.results[0][0].transcript.trim().replace(/\.$/, "");
+            sInputManual.value = resultText;
 
-            // إيقاف إجباري للمايك
             recognition.stop(); 
 
-            // إرسال سلسلة تنبيهات لضمان التفاعل
-            const events = ['input', 'change'];
-            events.forEach(evt => {
-                sInputManual.dispatchEvent(new Event(evt, { bubbles: true }));
-            });
+            // إرسال تنبيه للمتصفح بأن النص تغير
+            sInputManual.dispatchEvent(new Event('input', { bubbles: true }));
 
-            // استدعاء مباشر لفلترة الدكاترة لضمان ظهور البطاقة فوراً
+            // استدعاء مباشر لفلترة الدكاترة للتأكد من ظهور البطاقة
             filterDoctors();
         };
 
         recognition.onend = () => {
             vBtn.classList.remove('listening');
             vWaves.style.display = 'none';
-            recognition.stop(); 
         };
 
         recognition.onerror = () => {
