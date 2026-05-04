@@ -242,3 +242,94 @@ if (telBtn) {
         }, 500);
     });
 }
+
+// وظائف المساعد الذكي جيس (Gace)
+function toggleGace() {
+    const chatBox = document.getElementById('gace-chat-box');
+    const msgDiv = document.getElementById('gace-messages');
+    chatBox.classList.toggle('hidden');
+    
+    // إفراغ الرسائل القديمة عند تغيير اللغة لضمان ظهور الترحيب باللغة الصحيحة
+    if (!chatBox.classList.contains('hidden') && msgDiv.innerHTML === "") {
+        if (currentLang === 'ar') {
+            addMessage("bot", "أهلاً بك في دليل كلية الهندسة! أنا 'جيس' مساعدك الذكي 🤖.");
+            addMessage("bot", "كيف تستفيد مني؟ \n• ابحث عن أي دكتور.\n• بعطيك المكتب والإيميل فوراً.\n• اكتب 3 حروف فأكثر 🔍.");
+        } else {
+            addMessage("bot", "Welcome to the Engineering Guide! I am 'Gace', your smart assistant 🤖.");
+            addMessage("bot", "How to use me? \n• Search for any doctor.\n• I'll give you office & email info.\n• Type 3+ characters to start 🔍.");
+        }
+    }
+}
+
+function addMessage(sender, text) {
+    const msgDiv = document.getElementById('gace-messages');
+    const newMsg = document.createElement('div');
+    newMsg.className = `msg ${sender}`;
+    newMsg.innerText = text;
+    msgDiv.appendChild(newMsg);
+    msgDiv.scrollTop = msgDiv.scrollHeight;
+}
+
+function askGace() {
+    const input = document.getElementById('gace-input');
+    const query = input.value.trim();
+    if (!query) return;
+
+    addMessage("user", query);
+    input.value = "";
+
+    // منطق البحث الذكي
+    setTimeout(() => {
+        const response = processGaceQuery(query);
+        addMessage("bot", response);
+    }, 500);
+}
+
+function processGaceQuery(query) {
+    let cleanQuery = query.toLowerCase().trim();
+    let normalizedQuery = normalizeArabic(cleanQuery); // للاستخدام مع البحث العربي
+    
+    // 1. التحقق من طول النص حسب اللغة
+    if (cleanQuery.length < 3) {
+        return currentLang === 'ar' 
+            ? "يا بشمهندس، عطني 3 حروف فأكثر عشان أركز معك 🤓." 
+            : "Engineer, please type 3+ characters so I can help you 🤓.";
+    }
+
+    // 2. الردود الفكاهية المترجمة (للاستظراف)
+    const jokesAr = ["هلا", "مين", "يا حليل", "أحبك", "يا ذكي", "هندسة"];
+    const jokesEn = ["hi", "hello", "who are you", "love you", "smart", "engineer"];
+    
+    if (jokesAr.some(j => normalizedQuery.includes(j)) || jokesEn.some(j => cleanQuery.includes(j))) {
+        return currentLang === 'ar'
+            ? "مركزين في الدراسة ولا في الاستظراف؟ ترا الفاينل ما يرحم يا هندسة! 😂"
+            : "Focus on your studies, engineer! Finals are coming for you! 😂";
+    }
+
+    // 3. منطق البحث المزدوج في البطاقات
+    let cards = document.getElementsByClassName('doctor-card');
+    for (let i = 0; i < cards.length; i++) {
+        let nameAr = normalizeArabic(cards[i].getAttribute('data-name') || "").toLowerCase();
+        let nameEn = (cards[i].getAttribute('data-name-en') || "").toLowerCase();
+        
+        // البحث في كلا الاسمين لضمان ظهور النتيجة مهما كانت لغة الإدخال
+        if (normalizedQuery.includes(nameAr) || nameAr.includes(normalizedQuery) || 
+            cleanQuery.includes(nameEn) || nameEn.includes(cleanQuery)) {
+            
+            let specialty = cards[i].getAttribute('data-specialty');
+            let office = cards[i].querySelector('p:nth-of-type(2)')?.innerText || "N/A";
+            let email = cards[i].querySelector('p:last-of-type')?.innerText || "N/A";
+            
+            if (currentLang === 'ar') {
+                return `لقيت لك الدكتور ${cards[i].getAttribute('data-name')} (قسم ${specialty}) 🎯.\n📍 المكتب: ${office}\n📧 الإيميل: ${email}\nأي خدمة ثانية؟`;
+            } else {
+                return `I found Dr. ${nameEn || cards[i].getAttribute('data-name')} 🎯.\n📍 Office: ${office}\n📧 Email: ${email}\nAnything else, Engineer?`;
+            }
+        }
+    }
+    
+    // 4. ردود الفشل المترجمة
+    return currentLang === 'ar'
+        ? "لفيت الكلية كلها ولا لقيت دكتور بهذا الاسم! تأكد من الاسم يا هندسة 😅."
+        : "I've searched everywhere but couldn't find this doctor! Double check the name, Engineer 😅.";
+}

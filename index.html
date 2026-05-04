@@ -612,6 +612,24 @@
     </div>
   </div>
 
+<!-- واجهة المساعد الذكي جيس -->
+<div id="gace-container">
+    <div id="gace-chat-box" class="hidden">
+        <div id="gace-header">
+            <span>🤖 المساعد الذكي "جيس"</span>
+            <button onclick="toggleGace()">×</button>
+        </div>
+        <div id="gace-messages"></div>
+        <div id="gace-input-area">
+            <input type="text" id="gace-input" placeholder="اسألني عن أي دكتور...">
+            <button onclick="askGace()">إرسال</button>
+        </div>
+    </div>
+    <button id="gace-trigger" onclick="toggleGace()">
+        <img src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png" alt="Gace" width="50">
+    </button>
+</div>
+
 <footer class="footer">
     <div class="footer-content">
       <!-- أضفنا كلاس translate والبيانات لكل سطر -->
