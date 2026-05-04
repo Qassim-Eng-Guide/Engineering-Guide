@@ -13,12 +13,10 @@ if (localStorage.getItem('theme') === 'dark') {
 // 3. وظائف القائمة (الترس)
 function toggleMenu() {
     const menu = document.querySelector('.settings-menu');
-    // إذا كنت جالس تسحب، لا تفتح القائمة
-    if (isDragging) return;
+    if (isDragging) return; // منع الفتح أثناء السحب
     menu.classList.toggle('active');
 }
 
-// إغلاق القائمة عند الضغط خارجها
 document.addEventListener('click', function(event) {
     const menu = document.querySelector('.settings-menu');
     if (menu && !menu.contains(event.target) && menu.classList.contains('active')) {
@@ -130,7 +128,7 @@ function filterDoctors() {
     }
 }
 
-// 7. شريط التقدم والتحميل
+// 7. شريط التقدم
 window.addEventListener('scroll', function() {
     var winScroll = body.scrollTop || document.documentElement.scrollTop;
     var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -139,41 +137,41 @@ window.addEventListener('scroll', function() {
     if (scrollProgress) scrollProgress.style.width = scrolled + "%";
 });
 
-window.addEventListener('load', function() {
-    const loader = document.getElementById('loader-wrapper');
-    if (loader) {
-        loader.style.opacity = '0';
-        setTimeout(() => { loader.style.display = 'none'; }, 600);
-    }
-});
+// 8. وظائف النسخ المعدلة
+// أ. دالة نسخ الإيميل المنفردة
+function copyEmail(email) {
+    navigator.clipboard.writeText(email).then(() => {
+        const msg = currentLang === 'ar' ? "تم نسخ الإيميل بنجاح!" : "Email Copied Successfully!";
+        alert(msg + "\n" + email);
+    }).catch(err => {
+        alert("فشل النسخ، تأكد من إعدادات المتصفح.");
+    });
+}
 
-// 8. وظائف النسخ
+// ب. دالة نسخ المعلومات الكاملة
 function copyFullInfo(name, major, office, email) {
     const header = currentLang === 'ar' ? "معلومات التواصل مع الدكتور:" : "Doctor Contact Information:";
     const fullText = `${header}\nالاسم: ${name}\nالتخصص: ${major}\nالمكتب: ${office}\nالإيميل: ${email}`;
     
     navigator.clipboard.writeText(fullText).then(() => {
-        const alertMsg = currentLang === 'ar' ? "تم نسخ البيانات بنجاح!" : "Info Copied Successfully!";
+        const alertMsg = currentLang === 'ar' ? "تم نسخ جميع البيانات بنجاح!" : "All Data Copied Successfully!";
         alert(alertMsg);
     }).catch(err => {
-        alert("حدث خطأ في النسخ.");
+        alert("حدث خطأ أثناء النسخ.");
     });
 }
 
-// --- 9. منطق سحب وتحريك الترس (النسخة المتوافقة مع جميع المتصفحات) ---
+// 9. منطق سحب وتحريك الترس (متوافق مع جميع المتصفحات)
 const menuContainer = document.querySelector('.settings-menu');
-const gearIcon = document.getElementById('mainGear');
 let isDragging = false;
 let currentX, currentY, initialX, initialY;
 let xOffset = 0, yOffset = 0;
 
-// إضافة مستمعات الأحداث للماوس واللمس مع خاصية passive: false لدعم المتصفحات الحديثة
 menuContainer.addEventListener("touchstart", dragStart, { passive: false });
 menuContainer.addEventListener("touchend", dragEnd, { passive: false });
 menuContainer.addEventListener("touchmove", drag, { passive: false });
-
 menuContainer.addEventListener("mousedown", dragStart, false);
-document.addEventListener("mouseup", dragEnd, false); // الأفضل يكون المستمع على الوثيقة كاملة
+document.addEventListener("mouseup", dragEnd, false);
 document.addEventListener("mousemove", drag, false);
 
 function dragStart(e) {
@@ -184,8 +182,6 @@ function dragStart(e) {
         initialX = e.clientX - xOffset;
         initialY = e.clientY - yOffset;
     }
-
-    // التحقق أن الضغط تم على الأيقونة أو الحاوية وليس الأزرار الداخلية
     if (e.target.id === "mainGear" || e.target.classList.contains('floating-gear')) {
         isDragging = true;
     }
@@ -201,9 +197,7 @@ function dragEnd(e) {
 
 function drag(e) {
     if (isDragging) {
-        // منع التمرير الافتراضي للمتصفح أثناء السحب (حل مشكلة السفاري والايفون)
-        e.preventDefault(); 
-        
+        e.preventDefault();
         if (e.type === "touchmove") {
             currentX = e.touches[0].clientX - initialX;
             currentY = e.touches[0].clientY - initialY;
@@ -211,11 +205,8 @@ function drag(e) {
             currentX = e.clientX - initialX;
             currentY = e.clientY - initialY;
         }
-
         xOffset = currentX;
         yOffset = currentY;
-        
-        // استخدام translate3d لأداء أفضل في معالجة الجرافيك بالمتصفح
         menuContainer.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
     }
 }

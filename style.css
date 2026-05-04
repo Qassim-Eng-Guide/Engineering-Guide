@@ -137,6 +137,18 @@ input:focus, select:focus {
     cursor: pointer;
 }
 
+/* تظليل رمز الدور داخل البطاقة (أصفر ثابت بدون نبض) */
+.highlight-room {
+    background: #facc15 !important;
+    color: #000 !important;
+    padding: 2px 8px !important;
+    border-radius: 4px !important;
+    font-weight: bold !important;
+    display: inline-block !important;
+    animation: none !important;
+    box-shadow: none !important;
+}
+
 /* =========================================
    6. المنيو والترس (Settings Gear)
    ========================================= */
@@ -145,6 +157,9 @@ input:focus, select:focus {
     bottom: 25px; right: 25px;
     display: flex; flex-direction: column;
     align-items: center; z-index: 4000;
+    touch-action: none;
+    user-select: none;
+    cursor: move;
 }
 
 .menu-options {
@@ -170,7 +185,6 @@ input:focus, select:focus {
     color: #006C35 !important;
     cursor: pointer;
     animation: slowRotate 10s linear infinite;
-    /* تأكد إنه ما يطلع بنص الشاشة */
     position: static !important; 
 }
 
@@ -190,20 +204,19 @@ input:focus, select:focus {
 .telegram-link {
     display: inline-block;
     margin-top: 18px;
-    color: #4ade80 !important; /* أخضر فسفوري مضيء */
+    color: #4ade80 !important;
     text-decoration: none;
     font-size: 15px;
     font-weight: bold;
     padding: 12px 30px;
     border: 2px solid #006C35;
     border-radius: 30px;
-    background-color: rgba(0, 108, 53, 0.1); /* خلفية خضراء شفافة */
+    background-color: rgba(0, 108, 53, 0.1);
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
-    /* التوهج المضيء (Glow Effect) */
     box-shadow: 0 0 15px rgba(74, 222, 128, 0.3);
-    animation: buttonGlow 2s infinite; /* أنيميشن النبض المضيء */
+    animation: buttonGlow 2s infinite;
 }
 
 .telegram-link:hover {
@@ -258,20 +271,20 @@ body.dark-theme .doctor-card h2, body.dark-theme .header h1 {
     padding: 10px 25px !important;
     font-size: 14px !important;
     font-weight: bold !important;
-    color: #dc2626 !important; /* أحمر صريح */
-    background-color: #fef2f2 !important; /* خلفية حمراء باهتة */
-    border: 2px solid #fecaca !important; /* إطار أحمر خفيف */
+    color: #dc2626 !important; 
+    background-color: #fef2f2 !important; 
+    border: 2px solid #fecaca !important; 
     border-radius: 50px !important;
     line-height: 1.6 !important;
     box-shadow: 0 4px 10px rgba(220, 38, 38, 0.1) !important;
     text-align: center !important;
 }
 
-/* 2. أزرار النسخ داخل بطاقات الدكاترة (رجعتها خضراء صريحة) */
+/* 2. أزرار النسخ داخل بطاقات الدكاترة */
 .doctor-card button {
     width: 100% !important;
     margin-top: 12px !important;
-    background-color: #006C35 !important; /* أخضر سعودي */
+    background-color: #006C35 !important; 
     color: white !important;
     border: none !important;
     padding: 12px !important;
@@ -287,11 +300,11 @@ body.dark-theme .doctor-card h2, body.dark-theme .header h1 {
     box-shadow: 0 5px 15px rgba(0, 108, 53, 0.2) !important;
 }
 
-/* 3. زر تليجرام المضيء (طلب التعديل) */
+/* 3. زر تليجرام المضيء */
 .telegram-link {
     display: inline-block !important;
     margin-top: 18px !important;
-    color: #4ade80 !important; /* لون فسفوري مضيء */
+    color: #4ade80 !important; 
     text-decoration: none !important;
     padding: 12px 30px !important;
     border: 2px solid #006C35 !important;
@@ -308,16 +321,9 @@ body.dark-theme .doctor-card h2, body.dark-theme .header h1 {
     100% { box-shadow: 0 0 5px rgba(74, 222, 128, 0.2); }
 }
 
-/* 4. إخفاء الترس "النشبة" اللي بوسط الصفحة */
+/* 4. إخفاء الترس "النشبة" */
 .gear-loader, .corner-gear, #loader-wrapper {
     display: none !important;
     height: 0 !important;
     visibility: hidden !important;
-}
-
-.settings-menu {
-    /* ... الأكواد السابقة ... */
-    touch-action: none; /* يمنع الصفحة من الاهتزاز أثناء سحب الترس على الجوال */
-    user-select: none;  /* يمنع تحديد النصوص بالخطأ أثناء السحب */
-    cursor: move;       /* يغير شكل الماوس ليدل على إمكانية التحريك */
 }
