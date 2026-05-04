@@ -314,3 +314,10 @@ body.dark-theme .doctor-card h2, body.dark-theme .header h1 {
     height: 0 !important;
     visibility: hidden !important;
 }
+
+.settings-menu {
+    /* ... الأكواد السابقة ... */
+    touch-action: none; /* يمنع الصفحة من الاهتزاز أثناء سحب الترس على الجوال */
+    user-select: none;  /* يمنع تحديد النصوص بالخطأ أثناء السحب */
+    cursor: move;       /* يغير شكل الماوس ليدل على إمكانية التحريك */
+}

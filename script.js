@@ -13,6 +13,8 @@ if (localStorage.getItem('theme') === 'dark') {
 // 3. وظائف القائمة (الترس)
 function toggleMenu() {
     const menu = document.querySelector('.settings-menu');
+    // إذا كنت جالس تسحب، لا تفتح القائمة
+    if (isDragging) return;
     menu.classList.toggle('active');
 }
 
@@ -27,7 +29,7 @@ document.addEventListener('click', function(event) {
 // 4. تبديل الوضع الليلي
 if (darkModeToggle) {
     darkModeToggle.onclick = function(e) {
-        e.stopPropagation(); // منع إغلاق القائمة فور الضغط
+        e.stopPropagation(); 
         body.classList.toggle('dark-theme');
         const isDark = body.classList.contains('dark-theme');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
@@ -66,7 +68,6 @@ const translations = {
 function toggleLanguage() {
     currentLang = currentLang === 'ar' ? 'en' : 'ar';
     
-    // أ. تحديث النصوص الثابتة
     document.querySelector('.header h1').innerText = translations[currentLang].title;
     document.querySelector('.header p:nth-of-type(1)').innerText = translations[currentLang].subtitle;
     document.querySelector('.disclaimer').innerText = translations[currentLang].disclaimer;
@@ -74,17 +75,14 @@ function toggleLanguage() {
     document.getElementById('searchInput').placeholder = translations[currentLang].searchPlholder;
     document.getElementById('langToggle').innerText = translations[currentLang].langBtn;
 
-    // ب. ترجمة العناصر التي تحمل كلاس translate
     document.querySelectorAll('.translate').forEach(el => {
         const text = el.getAttribute(`data-${currentLang}`);
         if (text) el.innerText = text;
     });
 
-    // ج. تغيير اتجاه الموقع وتنسيقه
     body.style.direction = currentLang === 'ar' ? 'rtl' : 'ltr';
     currentLang === 'en' ? body.classList.add('en-mode') : body.classList.remove('en-mode');
     
-    // د. ترجمة أسماء الدكاترة (إذا كانت البيانات موجودة)
     document.querySelectorAll('.doctor-card').forEach(card => {
         const nameAr = card.getAttribute('data-name');
         const nameEn = card.getAttribute('data-name-en');
@@ -150,23 +148,60 @@ window.addEventListener('load', function() {
 });
 
 // 8. وظائف النسخ
-function copyEmail(email) {
-    navigator.clipboard.writeText(email).then(() => {
-        alert(currentLang === 'ar' ? "تم نسخ الإيميل: " + email : "Email Copied: " + email);
-    });
-}
 function copyFullInfo(name, major, office, email) {
-    // إضافة الجملة الافتتاحية كما كانت سابقاً
     const header = currentLang === 'ar' ? "معلومات التواصل مع الدكتور:" : "Doctor Contact Information:";
-    
-    // تجهيز النص الكامل بالترتيب المطلوب
     const fullText = `${header}\nالاسم: ${name}\nالتخصص: ${major}\nالمكتب: ${office}\nالإيميل: ${email}`;
     
-    // تنفيذ عملية النسخ
     navigator.clipboard.writeText(fullText).then(() => {
         const alertMsg = currentLang === 'ar' ? "تم نسخ البيانات بنجاح!" : "Info Copied Successfully!";
         alert(alertMsg);
     }).catch(err => {
-        alert("حدث خطأ في النسخ، تأكد من تحديث الصفحة.");
+        alert("حدث خطأ في النسخ.");
     });
+}
+
+// --- 9. منطق سحب وتحريك الترس (بدون حذف ميزات) ---
+const menuContainer = document.querySelector('.settings-menu');
+let isDragging = false;
+let currentX, currentY, initialX, initialY;
+let xOffset = 0, yOffset = 0;
+
+menuContainer.addEventListener("touchstart", dragStart, false);
+menuContainer.addEventListener("touchend", dragEnd, false);
+menuContainer.addEventListener("touchmove", drag, false);
+menuContainer.addEventListener("mousedown", dragStart, false);
+menuContainer.addEventListener("mouseup", dragEnd, false);
+menuContainer.addEventListener("mousemove", drag, false);
+
+function dragStart(e) {
+    if (e.type === "touchstart") {
+        initialX = e.touches[0].clientX - xOffset;
+        initialY = e.touches[0].clientY - yOffset;
+    } else {
+        initialX = e.clientX - xOffset;
+        initialY = e.clientY - yOffset;
+    }
+    if (e.target.id === "mainGear") isDragging = true;
+}
+
+function dragEnd(e) {
+    initialX = currentX;
+    initialY = currentY;
+    isDragging = false;
+}
+
+function drag(e) {
+    if (isDragging) {
+        e.preventDefault();
+        if (e.type === "touchmove") {
+            currentX = e.touches[0].clientX - initialX;
+            currentY = e.touches[0].clientY - initialY;
+        } else {
+            currentX = e.clientX - initialX;
+            currentY = e.clientY - initialY;
+        }
+        xOffset = currentX;
+        yOffset = currentY;
+        menuContainer.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
+    }
 }
