@@ -160,18 +160,21 @@ function copyFullInfo(name, major, office, email) {
     });
 }
 
-// --- 9. منطق سحب وتحريك الترس (بدون حذف ميزات) ---
+// --- 9. منطق سحب وتحريك الترس (النسخة المتوافقة مع جميع المتصفحات) ---
 const menuContainer = document.querySelector('.settings-menu');
+const gearIcon = document.getElementById('mainGear');
 let isDragging = false;
 let currentX, currentY, initialX, initialY;
 let xOffset = 0, yOffset = 0;
 
-menuContainer.addEventListener("touchstart", dragStart, false);
-menuContainer.addEventListener("touchend", dragEnd, false);
-menuContainer.addEventListener("touchmove", drag, false);
+// إضافة مستمعات الأحداث للماوس واللمس مع خاصية passive: false لدعم المتصفحات الحديثة
+menuContainer.addEventListener("touchstart", dragStart, { passive: false });
+menuContainer.addEventListener("touchend", dragEnd, { passive: false });
+menuContainer.addEventListener("touchmove", drag, { passive: false });
+
 menuContainer.addEventListener("mousedown", dragStart, false);
-menuContainer.addEventListener("mouseup", dragEnd, false);
-menuContainer.addEventListener("mousemove", drag, false);
+document.addEventListener("mouseup", dragEnd, false); // الأفضل يكون المستمع على الوثيقة كاملة
+document.addEventListener("mousemove", drag, false);
 
 function dragStart(e) {
     if (e.type === "touchstart") {
@@ -181,18 +184,26 @@ function dragStart(e) {
         initialX = e.clientX - xOffset;
         initialY = e.clientY - yOffset;
     }
-    if (e.target.id === "mainGear") isDragging = true;
+
+    // التحقق أن الضغط تم على الأيقونة أو الحاوية وليس الأزرار الداخلية
+    if (e.target.id === "mainGear" || e.target.classList.contains('floating-gear')) {
+        isDragging = true;
+    }
 }
 
 function dragEnd(e) {
-    initialX = currentX;
-    initialY = currentY;
-    isDragging = false;
+    if (isDragging) {
+        initialX = currentX;
+        initialY = currentY;
+        isDragging = false;
+    }
 }
 
 function drag(e) {
     if (isDragging) {
-        e.preventDefault();
+        // منع التمرير الافتراضي للمتصفح أثناء السحب (حل مشكلة السفاري والايفون)
+        e.preventDefault(); 
+        
         if (e.type === "touchmove") {
             currentX = e.touches[0].clientX - initialX;
             currentY = e.touches[0].clientY - initialY;
@@ -200,8 +211,11 @@ function drag(e) {
             currentX = e.clientX - initialX;
             currentY = e.clientY - initialY;
         }
+
         xOffset = currentX;
         yOffset = currentY;
+        
+        // استخدام translate3d لأداء أفضل في معالجة الجرافيك بالمتصفح
         menuContainer.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
     }
 }
