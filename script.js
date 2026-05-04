@@ -98,7 +98,7 @@ function filterDoctors() {
     var searchInputEl = document.getElementById('searchInput');
     if (!searchInputEl) return;
     
-    var searchInput = searchInputEl.value.toLowerCase();
+    var searchInput = searchInputEl.value.toLowerCase().trim(); // إضافة trim لتنظيف المسافات
     var specialtyFilter = document.getElementById('specialtyFilter').value;
     var cards = document.getElementsByClassName('doctor-card');
     var doctorList = document.querySelector('.doctor-list');
@@ -129,12 +129,6 @@ function filterDoctors() {
         msg.innerHTML = translations[currentLang].noResults;
         doctorList.appendChild(msg);
     }
-}
-
-// إضافة مستمع حدث دائم للتغير في شريط البحث (يحل مشكلة عدم ظهور البطاقة)
-const searchInputOriginal = document.getElementById('searchInput');
-if (searchInputOriginal) {
-    searchInputOriginal.addEventListener('input', filterDoctors);
 }
 
 // 7. شريط التقدم
@@ -232,17 +226,20 @@ if (telBtn) {
     });
 }
 
-// إضافة ميزة البحث الصوتي (Voice Search) المحدثة بالكامل
-const sInput = document.getElementById('searchInput');
-if (sInput) {
+// 10. إضافة ميزة البحث الصوتي (Voice Search) المحدثة بالكامل
+const sInputManual = document.getElementById('searchInput');
+if (sInputManual) {
+    // تفعيل البحث اليدوي عند الكتابة
+    sInputManual.addEventListener('input', filterDoctors);
+
     const wrap = document.createElement('div');
     wrap.className = 'search-wrapper';
-    sInput.parentNode.replaceChild(wrap, sInput);
+    sInputManual.parentNode.replaceChild(wrap, sInputManual);
     wrap.innerHTML = `
         <button id="voiceSearchBtn" title="البحث الصوتي">🎤</button>
         <div class="voice-waves"><span></span><span></span><span></span></div>
     `;
-    wrap.prepend(sInput);
+    wrap.prepend(sInputManual);
 
     const vBtn = document.getElementById('voiceSearchBtn');
     const vWaves = document.querySelector('.voice-waves');
@@ -267,23 +264,18 @@ if (sInput) {
 
         recognition.onresult = (e) => {
             const transcript = e.results[0][0].transcript.trim();
-            sInput.value = transcript;
+            sInputManual.value = transcript;
 
+            // إيقاف إجباري للمايك
             recognition.stop(); 
 
-            // إرسال سلسلة تنبيهات شاملة لإجبار الموقع على التحديث
-            const events = ['input', 'change', 'keyup', 'blur'];
+            // إرسال سلسلة تنبيهات لضمان التفاعل
+            const events = ['input', 'change'];
             events.forEach(evt => {
-                sInput.dispatchEvent(new Event(evt, { bubbles: true }));
+                sInputManual.dispatchEvent(new Event(evt, { bubbles: true }));
             });
 
-            // محاكاة الضغط على "Enter"
-            const enterEvent = new KeyboardEvent('keydown', {
-                bubbles: true, cancelable: true, keyCode: 13, key: 'Enter'
-            });
-            sInput.dispatchEvent(enterEvent);
-
-            // استدعاء مباشر وأخير للدالة
+            // استدعاء مباشر لفلترة الدكاترة لضمان ظهور البطاقة فوراً
             filterDoctors();
         };
 
