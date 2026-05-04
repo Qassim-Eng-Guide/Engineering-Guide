@@ -254,12 +254,20 @@ if (sInput) {
 
     if (Recog) {
         const recognition = new Recog();
-        recognition.lang = 'ar-SA'; // التعرف على اللهجة السعودية
-        
-        vBtn.onclick = () => {
-            recognition.start();
-            vBtn.classList.add('listening');
-            vWaves.style.display = 'flex';
+        recognition.lang = 'ar-SA'; // ضبط اللغة للهجة السعودية
+        recognition.continuous = false; // يوقف التسجيل بمجرد ما تخلص كلام
+        recognition.interimResults = false; // يظهر النتيجة النهائية فقط لسرعة الأداء
+
+        vBtn.onclick = (e) => {
+            e.preventDefault(); // منع أي تصرف افتراضي قد يعطل الميكروفون
+            try {
+                recognition.start();
+                vBtn.classList.add('listening');
+                vWaves.style.display = 'flex';
+            } catch (err) {
+                // في حال كان الميكروفون يعمل مسبقاً، يقوم بإعادة تشغيله
+                recognition.stop();
+            }
         };
 
         recognition.onresult = (e) => {
