@@ -1,3 +1,13 @@
+// دالة لتوحيد الحروف ومعالجة الهمزات والأخطاء الإملائية
+function normalizeArabic(text) {
+    if (!text) return "";
+    return text
+        .replace(/[أإآ]/g, "ا") // توحيد الألف
+        .replace(/ة/g, "ه")    // التاء المربوطة
+        .replace(/ى/g, "ي")    // الياء المتطرفة
+        .replace(/[\u064B-\u0652]/g, "") // إزالة التشكيل إن وجد
+        .trim();
+}
 // 1. تعريف المتغيرات الأساسية
 const body = document.body;
 const darkModeToggle = document.getElementById('darkModeToggle');
@@ -98,8 +108,10 @@ function filterDoctors() {
     var searchInputEl = document.getElementById('searchInput');
     if (!searchInputEl) return;
     
-    // تنظيف النص تماماً من أي مسافات أو نقط زائدة في النهاية
-    var searchInput = searchInputEl.value.toLowerCase().trim().replace(/\.$/, "");
+    // 1. تنظيف النص وتمريره عبر دالة توحيد الحروف (الهمزات)
+    var rawInput = searchInputEl.value.toLowerCase().trim().replace(/\.$/, "");
+    var searchInput = normalizeArabic(rawInput); 
+
     var specialtyFilter = document.getElementById('specialtyFilter').value;
     var cards = document.getElementsByClassName('doctor-card');
     var doctorList = document.querySelector('.doctor-list');
@@ -110,7 +122,11 @@ function filterDoctors() {
 
     for (var i = 0; i < cards.length; i++) {
         var specialty = cards[i].getAttribute('data-specialty') || "";
-        var nameAr = (cards[i].getAttribute('data-name') || "").toLowerCase();
+        
+        // 2. تطبيق توحيد الحروف على اسم الدكتور أيضاً لضمان المطابقة
+        var nameArRaw = cards[i].getAttribute('data-name') || "";
+        var nameAr = normalizeArabic(nameArRaw.toLowerCase());
+        
         var nameEn = (cards[i].getAttribute('data-name-en') || "").toLowerCase();
         
         var matchesSpecialty = (specialtyFilter === 'all' || specialty === specialtyFilter);
