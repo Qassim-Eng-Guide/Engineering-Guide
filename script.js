@@ -270,37 +270,37 @@ if (sInput) {
             }
         };
 
+       // --- استبدل من هنا ---
         recognition.onresult = (e) => {
             const transcript = e.results[0][0].transcript.trim();
             sInput.value = transcript;
 
-            // 1. إيقاف الميكروفون فوراً يدوياً
+            // 1. إيقاف الميكروفون فوراً يدوياً (لحل مشكلة العلامة البرتقالية)
             recognition.stop(); 
 
-            // 2. إجبار المتصفح على تشغيل الفلترة وإظهار البطاقة
-            // نرسل تنبيه 'input' مع خاصية bubbles لضمان وصول التنبيه للدالة
+            // 2. إرسال تنبيه للمتصفح بأن النص تغير لضمان عمل الفلترة
             sInput.dispatchEvent(new Event('input', { bubbles: true }));
-            
-            // 3. استدعاء مباشر لدالة الفلترة لضمان ظهور البطاقة فوراً
+            sInput.dispatchEvent(new Event('change', { bubbles: true }));
+
+            // 3. استدعاء مباشر لدالة الفلترة لظهور بطاقة الدكتور فوراً
             if (typeof filterDoctors === "function") {
                 filterDoctors();
             }
         };
 
-        // التأكد من إطفاء الأنوار والموجات فور انتهاء الكلام أو الخطأ
- // التأكد من إيقاف الواجهة البصرية فور توقف المايك
         recognition.onend = () => {
+            // إغلاق الواجهة البصرية والتأكد من إطفاء المايك في النظام
             vBtn.classList.remove('listening');
             vWaves.style.display = 'none';
-            recognition.stop(); // إغلاق إضافي لضمان قطع الإشارة
+            recognition.stop(); 
         };
 
-        // إغلاق المايك في حال حدوث خطأ (مثل عدم سماع صوت)
         recognition.onerror = () => {
             recognition.stop();
             vBtn.classList.remove('listening');
             vWaves.style.display = 'none';
         };
+// --- إلى هنا ---
     } else {
         vBtn.style.display = 'none';
     }
