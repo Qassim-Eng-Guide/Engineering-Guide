@@ -235,10 +235,9 @@ if (telBtn) {
     });
 }
 
-// إضافة ميزة البحث الصوتي (Voice Search)
+// إضافة ميزة البحث الصوتي (Voice Search) المحدثة
 const sInput = document.getElementById('searchInput');
 if (sInput) {
-    // بناء الحاوية والأيقونة برمجياً
     const wrap = document.createElement('div');
     wrap.className = 'search-wrapper';
     sInput.parentNode.replaceChild(wrap, sInput);
@@ -254,12 +253,12 @@ if (sInput) {
 
     if (Recog) {
         const recognition = new Recog();
-        recognition.lang = 'ar-SA'; // ضبط اللغة للهجة السعودية
-        recognition.continuous = false; // يوقف التسجيل بمجرد ما تخلص كلام
-        recognition.interimResults = false; // يظهر النتيجة النهائية فقط لسرعة الأداء
+        recognition.lang = 'ar-SA';
+        recognition.continuous = false; 
+        recognition.interimResults = false;
 
         vBtn.onclick = (e) => {
-            e.preventDefault(); 
+            e.preventDefault();
             try {
                 recognition.start();
                 vBtn.classList.add('listening');
@@ -270,21 +269,32 @@ if (sInput) {
         };
 
         recognition.onresult = (e) => {
-            const transcript = e.results[0][0].transcript;
-            sInput.value = transcript.trim(); // يضع النص المنقح في البوكس
+            const transcript = e.results[0][0].transcript.trim();
+            sInput.value = transcript;
 
-            // 1. إيقاف المايك فوراً يدوياً بعد الحصول على النتيجة
+            // 1. إيقاف الميكروفون فوراً وبشكل إجباري
             recognition.stop(); 
 
-            // 2. تحديث الفلترة لظهور بطاقة الدكتور فوراً
-            filterDoctors(); 
-            
-            // 3. إرسال تنبيه للمتصفح بأن القيمة تغيرت (لضمان توافق الفلترة)
+            // 2. محاكاة حدث الكتابة لإجبار دالة filterDoctors على العمل
+            // نستخدم 'input' و 'keyup' لضمان أن الفلترة تشعر بالتغيير
             sInput.dispatchEvent(new Event('input', { bubbles: true }));
+            sInput.dispatchEvent(new Event('keyup', { bubbles: true }));
+
+            // 3. استدعاء مباشر للدالة للتأكد من ظهور البطاقة
+            if (typeof filterDoctors === "function") {
+                filterDoctors();
+            }
         };
 
+        // التأكد من إغلاق المظاهر البصرية فور توقف المايك
         recognition.onend = () => {
-            // تنظيف الأشكال والوميض عند توقف المايك
+            vBtn.classList.remove('listening');
+            vWaves.style.display = 'none';
+        };
+
+        // في حال حدوث خطأ، يتم إغلاق المايك تلقائياً
+        recognition.onerror = () => {
+            recognition.stop();
             vBtn.classList.remove('listening');
             vWaves.style.display = 'none';
         };
