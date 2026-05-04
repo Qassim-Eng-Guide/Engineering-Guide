@@ -271,18 +271,26 @@ if (sInput) {
         };
 
        // --- استبدل من هنا ---
-        recognition.onresult = (e) => {
+recognition.onresult = (e) => {
             const transcript = e.results[0][0].transcript.trim();
             sInput.value = transcript;
 
-            // 1. إيقاف الميكروفون فوراً يدوياً (لحل مشكلة العلامة البرتقالية)
+            // 1. إيقاف المايك فوراً
             recognition.stop(); 
 
-            // 2. إرسال تنبيه للمتصفح بأن النص تغير لضمان عمل الفلترة
-            sInput.dispatchEvent(new Event('input', { bubbles: true }));
-            sInput.dispatchEvent(new Event('change', { bubbles: true }));
+            // 2. إرسال سلسلة تنبيهات شاملة لإجبار الموقع على التحديث
+            const events = ['input', 'change', 'keyup', 'blur'];
+            events.forEach(evt => {
+                sInput.dispatchEvent(new Event(evt, { bubbles: true }));
+            });
 
-            // 3. استدعاء مباشر لدالة الفلترة لظهور بطاقة الدكتور فوراً
+            // 3. محاكاة الضغط على "Enter" برمجياً (هذه الحركة غالباً تحل مشكلة عدم ظهور البطاقة)
+            const enterEvent = new KeyboardEvent('keydown', {
+                bubbles: true, cancelable: true, keyCode: 13, key: 'Enter'
+            });
+            sInput.dispatchEvent(enterEvent);
+
+            // 4. استدعاء مباشر وأخير للدالة
             if (typeof filterDoctors === "function") {
                 filterDoctors();
             }
