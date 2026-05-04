@@ -210,3 +210,69 @@ function drag(e) {
         menuContainer.style.transform = `translate3d(${currentX}px, ${currentY}px, 0)`;
     }
 }
+
+// تشغيل وميض التليجرام الانفجاري
+const telBtn = document.querySelector('.telegram-link');
+
+if (telBtn) {
+    telBtn.addEventListener('click', function(e) {
+        // 1. إزالة الكلاس أولاً لضمان إمكانية تكرار الضغط
+        this.classList.remove('active-flash');
+        
+        // 2. إيقاف أنيميشن النبض مؤقتاً
+        this.style.animation = 'none';
+        
+        // 3. حركة سحرية (إجبار المتصفح على إعادة الحساب)
+        void this.offsetWidth; 
+        
+        // 4. إضافة كلاس الوميض القوي
+        this.classList.add('active-flash');
+        
+        // 5. بعد انتهاء الوميض (0.5 ثانية) نرجع النبض العادي
+        setTimeout(() => {
+            this.style.animation = 'telegramPulse 2s infinite';
+        }, 500);
+    });
+}
+
+// إضافة ميزة البحث الصوتي (Voice Search)
+const sInput = document.getElementById('searchInput');
+if (sInput) {
+    // بناء الحاوية والأيقونة برمجياً
+    const wrap = document.createElement('div');
+    wrap.className = 'search-wrapper';
+    sInput.parentNode.replaceChild(wrap, sInput);
+    wrap.innerHTML = `
+        <button id="voiceSearchBtn" title="البحث الصوتي">🎤</button>
+        <div class="voice-waves"><span></span><span></span><span></span></div>
+    `;
+    wrap.prepend(sInput);
+
+    const vBtn = document.getElementById('voiceSearchBtn');
+    const vWaves = document.querySelector('.voice-waves');
+    const Recog = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (Recog) {
+        const recognition = new Recog();
+        recognition.lang = 'ar-SA'; // التعرف على اللهجة السعودية
+        
+        vBtn.onclick = () => {
+            recognition.start();
+            vBtn.classList.add('listening');
+            vWaves.style.display = 'flex';
+        };
+
+        recognition.onresult = (e) => {
+            const transcript = e.results[0][0].transcript;
+            sInput.value = transcript;
+            filterDoctors(); // فلترة تلقائية بعد تحويل الصوت لنص
+        };
+
+        recognition.onend = () => {
+            vBtn.classList.remove('listening');
+            vWaves.style.display = 'none';
+        };
+    } else {
+        vBtn.style.display = 'none'; // إخفاء الزر إذا كان المتصفح لا يدعم الميزة
+    }
+}

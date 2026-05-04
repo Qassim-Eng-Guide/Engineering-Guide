@@ -9,7 +9,7 @@ body {
     color: #1f2937;
     min-height: 100vh;
     position: relative;
-    overflow-x: hidden; /* يمنع التمدد الجانبي */
+    overflow-x: hidden;
 }
 
 body::before {
@@ -38,11 +38,11 @@ body::before {
     width: 90%;
     max-width: 1100px;
     margin: auto;
-    padding: 30px 0 20px; /* تقليل البادنج السفلي */
+    padding: 30px 0 20px;
 }
 
 /* =========================================
-   2. الترويسة (Header)
+   2. الترويسة (Header) & العبارة الحمراء
    ========================================= */
 .header { text-align: center; margin-bottom: 30px; }
 .header h1 { font-weight: 700; font-size: 42px; color: #006C35; margin: 0; }
@@ -51,8 +51,23 @@ body::before {
     background: #006C35; margin: 15px auto; border-radius: 2px;
 }
 
+.disclaimer {
+    display: inline-block !important;
+    margin-top: 15px !important;
+    padding: 10px 25px !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    color: #dc2626 !important; 
+    background-color: #fef2f2 !important; 
+    border: 2px solid #fecaca !important; 
+    border-radius: 50px !important;
+    line-height: 1.6 !important;
+    box-shadow: 0 4px 10px rgba(220, 38, 38, 0.1) !important;
+    text-align: center !important;
+}
+
 /* =========================================
-   3. دليل الرموز (Office Guide) - استعادة الشكل
+   3. دليل الرموز (Office Guide)
    ========================================= */
 .office-guide {
     background: white;
@@ -82,13 +97,20 @@ body::before {
 }
 
 /* =========================================
-   4. البحث والفلترة (Controls) - استعادة الشكل
+   4. البحث والفلترة (حاوية الميكروفون)
    ========================================= */
 .controls {
     display: grid;
     grid-template-columns: 1fr 250px;
     gap: 15px;
     margin-bottom: 25px;
+}
+
+.search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
 }
 
 input, select {
@@ -107,6 +129,37 @@ input:focus, select:focus {
     box-shadow: 0 0 0 4px rgba(0, 108, 53, 0.1);
 }
 
+#voiceSearchBtn {
+    position: absolute;
+    left: 15px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #006C35;
+    z-index: 10;
+    padding: 0;
+}
+
+#voiceSearchBtn.listening {
+    color: #dc2626;
+    animation: pulse-red 1.5s infinite;
+}
+
+.voice-waves {
+    display: none;
+    position: absolute;
+    left: 45px;
+    height: 20px;
+    align-items: center;
+    gap: 3px;
+}
+
+.voice-waves span {
+    width: 3px; height: 100%; background: #4ade80;
+    border-radius: 3px; animation: wave-anim 0.8s infinite ease-in-out;
+}
+
 /* =========================================
    5. البطاقات (Doctor Cards)
    ========================================= */
@@ -122,169 +175,22 @@ input:focus, select:focus {
     padding: 22px;
     border-radius: 20px;
     border: 1px solid rgba(0, 108, 53, 0.1);
-    transition: 0.4s ease;
+    transition: all 0.4s ease;
     position: relative;
+}
+
+.doctor-card:hover {
+    border-color: #4ade80 !important;
+    box-shadow: 0 0 20px rgba(74, 222, 128, 0.5), 0 12px 25px rgba(0, 108, 53, 0.15) !important;
+    transform: translateY(-8px) scale(1.01);
 }
 
 .doctor-card h2 { color: #006C35 !important; font-size: 20px; margin-top: 0; }
 
 .doctor-card button {
-    width: 100%; margin-top: 12px;
-    background-color: #006C35 !important;
-    color: white !important;
-    border: none; padding: 12px;
-    border-radius: 10px; font-weight: bold;
-    cursor: pointer;
-}
-
-/* تظليل رمز الدور داخل البطاقة (أصفر ثابت بدون نبض) */
-.highlight-room {
-    background: #facc15 !important;
-    color: #000 !important;
-    padding: 2px 8px !important;
-    border-radius: 4px !important;
-    font-weight: bold !important;
-    display: inline-block !important;
-    animation: none !important;
-    box-shadow: none !important;
-}
-
-/* =========================================
-   6. المنيو والترس (Settings Gear)
-   ========================================= */
-.settings-menu {
-    position: fixed;
-    bottom: 25px; right: 25px;
-    display: flex; flex-direction: column;
-    align-items: center; z-index: 4000;
-    touch-action: none;
-    user-select: none;
-    cursor: move;
-}
-
-.menu-options {
-    display: flex; flex-direction: column;
-    gap: 10px; margin-bottom: 15px;
-    opacity: 0; transform: translateY(20px);
-    transition: 0.4s; pointer-events: none;
-}
-
-.settings-menu.active .menu-options {
-    opacity: 1; transform: translateY(0); pointer-events: auto;
-}
-
-.menu-options button {
-    background-color: #006C35 !important;
-    color: white !important;
-    border: none; padding: 10px 20px;
-    border-radius: 25px; font-weight: bold;
-}
-
-.floating-gear {
-    font-size: 60px;
-    color: #006C35 !important;
-    cursor: pointer;
-    animation: slowRotate 10s linear infinite;
-    position: static !important; 
-}
-
-/* =========================================
-   7. تذييل الصفحة (Footer)
-   ========================================= */
-.footer {
-    background-color: #111827;
-    color: #ffffff;
-    text-align: center;
-    padding: 30px 15px;
-    margin-top: 40px;
-    border-top: 5px solid #006C35;
-}
-
-/* زر تليجرام المضيء والتفاعلي */
-.telegram-link {
-    display: inline-block;
-    margin-top: 18px;
-    color: #4ade80 !important;
-    text-decoration: none;
-    font-size: 15px;
-    font-weight: bold;
-    padding: 12px 30px;
-    border: 2px solid #006C35;
-    border-radius: 30px;
-    background-color: rgba(0, 108, 53, 0.1);
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 0 15px rgba(74, 222, 128, 0.3);
-    animation: buttonGlow 2s infinite;
-}
-
-.telegram-link:hover {
-    background-color: #006C35;
-    color: #ffffff !important;
-    transform: scale(1.08);
-    box-shadow: 0 0 25px rgba(74, 222, 128, 0.6);
-}
-
-/* أنيميشن النبض المضيء */
-@keyframes buttonGlow {
-    0% { box-shadow: 0 0 5px rgba(74, 222, 128, 0.2); }
-    50% { box-shadow: 0 0 20px rgba(74, 222, 128, 0.5); }
-    100% { box-shadow: 0 0 5px rgba(74, 222, 128, 0.2); }
-}
-
-/* =========================================
-   8. الوضع الليلي (Dark Theme)
-   ========================================= */
-body.dark-theme { background: #0b1120 !important; color: #e5e7eb; }
-body.dark-theme .doctor-card, body.dark-theme .office-guide {
-    background: rgba(30, 41, 59, 0.8) !important;
-}
-body.dark-theme .doctor-card h2, body.dark-theme .header h1 {
-    color: #4ade80 !important;
-}
-
-/* =========================================
-   9. الأنيميشن
-   ========================================= */
-@keyframes slowRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-@keyframes pulse-yellow {
-    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7); }
-    70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(250, 204, 21, 0); }
-    100% { transform: scale(1); }
-}
-
-/* الموبايل */
-@media (max-width: 700px) {
-    .controls { grid-template-columns: 1fr; }
-    .header h1 { font-size: 28px; }
-}
-
-/* =========================================
-   تعديلات منصور النهائية (العبارة الحمراء + النسخ + تليجرام)
-   ========================================= */
-
-/* 1. عبارة المبادرة الطلابية (الخلفية الحمراء المميزة) */
-.disclaimer {
-    display: inline-block !important;
-    margin-top: 15px !important;
-    padding: 10px 25px !important;
-    font-size: 14px !important;
-    font-weight: bold !important;
-    color: #dc2626 !important; 
-    background-color: #fef2f2 !important; 
-    border: 2px solid #fecaca !important; 
-    border-radius: 50px !important;
-    line-height: 1.6 !important;
-    box-shadow: 0 4px 10px rgba(220, 38, 38, 0.1) !important;
-    text-align: center !important;
-}
-
-/* 2. أزرار النسخ داخل بطاقات الدكاترة */
-.doctor-card button {
     width: 100% !important;
     margin-top: 12px !important;
-    background-color: #006C35 !important; 
+    background-color: #006C35 !important;
     color: white !important;
     border: none !important;
     padding: 12px !important;
@@ -292,6 +198,7 @@ body.dark-theme .doctor-card h2, body.dark-theme .header h1 {
     font-weight: bold !important;
     cursor: pointer !important;
     transition: 0.3s !important;
+    position: relative;
 }
 
 .doctor-card button:hover {
@@ -300,7 +207,66 @@ body.dark-theme .doctor-card h2, body.dark-theme .header h1 {
     box-shadow: 0 5px 15px rgba(0, 108, 53, 0.2) !important;
 }
 
-/* 3. زر تليجرام المضيء */
+.highlight-room {
+    background: #facc15 !important;
+    color: #000 !important;
+    padding: 2px 8px !important;
+    border-radius: 4px !important;
+    font-weight: bold !important;
+    display: inline-block !important;
+    animation: none !important;
+}
+
+/* التوهج وTooltip النسخ */
+.copy-success-glow { animation: glow-moment 0.6s ease-out !important; }
+@keyframes glow-moment {
+    0% { box-shadow: 0 0 0px rgba(74, 222, 128, 0); }
+    50% { box-shadow: 0 0 20px #4ade80, 0 0 30px rgba(74, 222, 128, 0.4); }
+    100% { box-shadow: 0 0 0px rgba(74, 222, 128, 0); }
+}
+
+.tooltip {
+    position: absolute; top: -35px; left: 50%; transform: translateX(-50%);
+    background: #333; color: #fff; padding: 6px 12px; border-radius: 6px;
+    font-size: 12px; opacity: 0; pointer-events: none; transition: all 0.3s ease;
+    z-index: 1000; white-space: nowrap;
+}
+.tooltip.show { opacity: 1; top: -45px; }
+
+/* =========================================
+   6. المنيو والترس (Settings Gear)
+   ========================================= */
+.settings-menu {
+    position: fixed; bottom: 25px; right: 25px;
+    display: flex; flex-direction: column; align-items: center; z-index: 4000;
+    touch-action: none; user-select: none; cursor: move;
+}
+
+.menu-options {
+    display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px;
+    opacity: 0; transform: translateY(20px); transition: 0.4s; pointer-events: none;
+}
+
+.settings-menu.active .menu-options { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+.menu-options button {
+    background-color: #006C35 !important; color: white !important;
+    border: none; padding: 10px 20px; border-radius: 25px; font-weight: bold;
+}
+
+.floating-gear {
+    font-size: 60px; color: #006C35 !important;
+    cursor: pointer; animation: slowRotate 10s linear infinite; position: static !important; 
+}
+
+/* =========================================
+   7. تذييل الصفحة & التليجرام (تفاعل الزووم الموحد)
+   ========================================= */
+.footer {
+    background-color: #111827; color: #ffffff; text-align: center;
+    padding: 30px 15px; margin-top: 40px; border-top: 5px solid #006C35;
+}
+
 .telegram-link {
     display: inline-block !important;
     margin-top: 18px !important;
@@ -313,17 +279,98 @@ body.dark-theme .doctor-card h2, body.dark-theme .header h1 {
     font-weight: bold !important;
     box-shadow: 0 0 15px rgba(74, 222, 128, 0.3) !important;
     animation: pulseGlow 2s infinite !important;
+    transition: all 0.3s ease !important;
 }
 
+/* التفاعل مع الماوس (مثل البطاقات) */
+.telegram-link:hover {
+    background-color: #006C35 !important;
+    color: #ffffff !important;
+    transform: translateY(-8px) scale(1.1) !important; /* زووم وارتفاع */
+    box-shadow: 0 0 30px rgba(74, 222, 128, 0.6), 0 12px 25px rgba(0, 108, 53, 0.2) !important;
+}
+
+/* الوميض والزووم عند النقر */
+.active-flash {
+    animation: telegram-click-glow 0.6s ease-out !important;
+}
+
+/* =========================================
+   8. الوضع الليلي (Dark Theme)
+   ========================================= */
+body.dark-theme { background: #0b1120 !important; color: #e5e7eb; }
+body.dark-theme .doctor-card, body.dark-theme .office-guide { background: rgba(30, 41, 59, 0.8) !important; }
+body.dark-theme .doctor-card h2, body.dark-theme .header h1 { color: #4ade80 !important; }
+
+/* =========================================
+   9. الأنيميشن المشترك
+   ========================================= */
+@keyframes slowRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes pulse-yellow {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7); }
+    70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(250, 204, 21, 0); }
+    100% { transform: scale(1); }
+}
 @keyframes pulseGlow {
     0% { box-shadow: 0 0 5px rgba(74, 222, 128, 0.2); }
     50% { box-shadow: 0 0 20px rgba(74, 222, 128, 0.5); }
     100% { box-shadow: 0 0 5px rgba(74, 222, 128, 0.2); }
 }
+@keyframes telegram-click-glow {
+    0% { transform: scale(1); }
+    50% { 
+        box-shadow: 0 0 80px rgba(74, 222, 128, 1), 0 0 120px rgba(0, 108, 53, 1); 
+        background-color: rgba(74, 222, 128, 0.9) !important;
+        transform: scale(1.2); /* زووم انفجاري */
+    }
+    100% { transform: scale(1); }
+}
+@keyframes wave-anim { 0%, 100% { transform: scaleY(0.5); } 50% { transform: scaleY(1.5); } }
+@keyframes pulse-red { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
 
-/* 4. إخفاء الترس "النشبة" */
-.gear-loader, .corner-gear, #loader-wrapper {
-    display: none !important;
-    height: 0 !important;
-    visibility: hidden !important;
+/* إخفاء العناصر غير المرغوب فيها */
+.gear-loader, .corner-gear, #loader-wrapper { display: none !important; height: 0 !important; visibility: hidden !important; }
+
+@media (max-width: 700px) { .controls { grid-template-columns: 1fr; } .header h1 { font-size: 28px; } }
+
+/* تنسيق البحث الصوتي داخل شريط البحث */
+.search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+#voiceSearchBtn {
+    position: absolute;
+    left: 15px; /* الميكروفون بجهة اليسار داخل المربع */
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: #006C35;
+    z-index: 10;
+    transition: 0.3s;
+}
+
+#voiceSearchBtn.listening {
+    color: #dc2626;
+    animation: pulse-red 1.5s infinite;
+}
+
+.voice-waves {
+    display: none;
+    position: absolute;
+    left: 45px;
+    height: 20px;
+    align-items: center;
+    gap: 3px;
+}
+
+.voice-waves span {
+    width: 3px;
+    height: 100%;
+    background: #4ade80;
+    border-radius: 3px;
+    animation: wave-anim 0.8s infinite ease-in-out;
 }
