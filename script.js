@@ -252,7 +252,7 @@ function toggleGace() {
     // إفراغ الرسائل القديمة عند تغيير اللغة لضمان ظهور الترحيب باللغة الصحيحة
     if (!chatBox.classList.contains('hidden') && msgDiv.innerHTML === "") {
         if (currentLang === 'ar') {
-            addMessage("bot", "أهلاً بك في دليل كلية الهندسة! أنا 'جيس' مساعدك الذكي 🤖.");
+            addMessage("bot", "أهلاً بك مع أسطورة كلية الهندسة! أنا 'جيس' مساعدك الذكي 🤖.");
             addMessage("bot", "كيف تستفيد مني؟ \n• ابحث عن أي دكتور.\n• بعطيك المكتب والإيميل فوراً.\n• اكتب 3 حروف فأكثر 🔍.");
         } else {
             addMessage("bot", "Welcome to the Engineering Guide! I am 'Gace', your smart assistant 🤖.");
@@ -285,51 +285,118 @@ function askGace() {
     }, 500);
 }
 
+// ذاكرة جيس لتذكر الاسم عند وجود تشابه
+let pendingDoctorName = null; 
+
 function processGaceQuery(query) {
     let cleanQuery = query.toLowerCase().trim();
-    let normalizedQuery = normalizeArabic(cleanQuery); // للاستخدام مع البحث العربي
-    
-    // 1. التحقق من طول النص حسب اللغة
+    let normalizedQuery = normalizeArabic(cleanQuery);
+
+    function getMajorCategory(text) {
+        let t = normalizeArabic(text || "").toLowerCase();
+        if (/كهرب|اتصالا|حاسب|الكترون|elec|computer|telecom/.test(t)) return "كهرباء";
+        if (/ميكا|الات|تصميم|حرار|انتاج|mech|power|prod/.test(t)) return "ميكانيكا";
+        if (/مدن|انشاء|طرق|خرسان|civil|structure|road/.test(t)) return "مدنية";
+        return t;
+    }
+
+    // 1. معالجة حالة "انتظار التخصص" (دعم وجود أكثر من دكتور بنفس الاسم في نفس القسم)
+    if (pendingDoctorName) {
+        let studentChoice = getMajorCategory(normalizedQuery);
+        let cards = document.getElementsByClassName('doctor-card');
+        let finalMatches = []; // مصفوفة لتخزين كل من يطابق الاسم والقسم
+        
+        for (let i = 0; i < cards.length; i++) {
+            let nameAr = normalizeArabic(cards[i].getAttribute('data-name') || "").toLowerCase();
+            let doctorMajor = getMajorCategory(cards[i].getAttribute('data-specialty') || "");
+
+            if (nameAr.includes(pendingDoctorName) && doctorMajor === studentChoice) {
+                let office = cards[i].querySelector('p:nth-of-type(2)')?.innerText || "غير مسجل";
+                let email = cards[i].querySelector('p:last-of-type')?.innerText || "غير مسجل";
+                let dName = cards[i].getAttribute('data-name');
+                
+                finalMatches.push(`👤 د. ${dName}\n📍 المكتب: ${office}\n📧 ${email}`);
+            }
+        }
+
+        if (finalMatches.length > 0) {
+            pendingDoctorName = null; 
+            let header = currentLang === 'ar' ? "✅ وجدت المطلوب:" : "✅ Results found:";
+            return header + "\n\n" + finalMatches.join("\n" + "-".repeat(15) + "\n");
+        }
+
+        return currentLang === 'ar' 
+            ? "💡 ملاحظة: لم أجد أحداً بهذا الاسم في هذا القسم. جرب قسماً آخر أو تأكد من الاسم." 
+            : "💡 Note: No matches in this major. Try another major or check the name.";
+    }
+
+    // 2. معالجة الاستظراف
+    const jokes = ["هلا", "مين", "تحس", "أحبك", "ذكي", "تعبت", "هندسة"];
+    if (jokes.some(j => normalizedQuery.includes(j)) && cleanQuery.length < 10) {
+        const funnyReplies = currentLang === 'ar' ? [
+            "مركز في الاستظراف وناسي الكويز؟ اخلص عطني اسم الدكتور 😂",
+            "وفر ظرافتك للدكاترة، أنا جيس مبرمج للعمل! تبي دكتور؟ ☕"
+        ] : ["Focus on your studies, engineer! 😂"];
+        return funnyReplies[Math.floor(Math.random() * funnyReplies.length)];
+    }
+
+    // 3. محرك البحث الأساسي
     if (cleanQuery.length < 3) {
         return currentLang === 'ar' 
-            ? "يا بشمهندس، عطني 3 حروف فأكثر عشان أركز معك 🤓." 
-            : "Engineer, please type 3+ characters so I can help you 🤓.";
+            ? "📝 ملاحظة: الاسم قصير. اكتب (الأول أو اللقب) بوضوح لنتائج أسرع."
+            : "📝 Note: Name too short. Use first or last name for faster results.";
     }
 
-    // 2. الردود الفكاهية المترجمة (للاستظراف)
-    const jokesAr = ["هلا", "مين", "يا حليل", "أحبك", "يا ذكي", "هندسة"];
-    const jokesEn = ["hi", "hello", "who are you", "love you", "smart", "engineer"];
-    
-    if (jokesAr.some(j => normalizedQuery.includes(j)) || jokesEn.some(j => cleanQuery.includes(j))) {
-        return currentLang === 'ar'
-            ? "مركزين في الدراسة ولا في الاستظراف؟ ترا الفاينل ما يرحم يا هندسة! 😂"
-            : "Focus on your studies, engineer! Finals are coming for you! 😂";
-    }
-
-    // 3. منطق البحث المزدوج في البطاقات
     let cards = document.getElementsByClassName('doctor-card');
+    let matches = [];
+    let detectedMajorInQuery = getMajorCategory(normalizedQuery);
+
     for (let i = 0; i < cards.length; i++) {
         let nameAr = normalizeArabic(cards[i].getAttribute('data-name') || "").toLowerCase();
         let nameEn = (cards[i].getAttribute('data-name-en') || "").toLowerCase();
+        let doctorMajor = getMajorCategory(cards[i].getAttribute('data-specialty') || "");
         
-        // البحث في كلا الاسمين لضمان ظهور النتيجة مهما كانت لغة الإدخال
-        if (normalizedQuery.includes(nameAr) || nameAr.includes(normalizedQuery) || 
-            cleanQuery.includes(nameEn) || nameEn.includes(cleanQuery)) {
-            
-            let specialty = cards[i].getAttribute('data-specialty');
-            let office = cards[i].querySelector('p:nth-of-type(2)')?.innerText || "N/A";
-            let email = cards[i].querySelector('p:last-of-type')?.innerText || "N/A";
-            
-            if (currentLang === 'ar') {
-                return `لقيت لك الدكتور ${cards[i].getAttribute('data-name')} (قسم ${specialty}) 🎯.\n📍 المكتب: ${office}\n📧 الإيميل: ${email}\nأي خدمة ثانية؟`;
+        let nameMatch = normalizedQuery.includes(nameAr) || nameAr.includes(normalizedQuery) || 
+                        cleanQuery.includes(nameEn) || nameEn.includes(cleanQuery);
+
+        if (nameMatch) {
+            if (["كهرباء", "ميكانيكا", "مدنية"].includes(detectedMajorInQuery)) {
+                if (doctorMajor === detectedMajorInQuery) matches.push(cards[i]);
             } else {
-                return `I found Dr. ${nameEn || cards[i].getAttribute('data-name')} 🎯.\n📍 Office: ${office}\n📧 Email: ${email}\nAnything else, Engineer?`;
+                matches.push(cards[i]);
             }
         }
     }
-    
-    // 4. ردود الفشل المترجمة
-    return currentLang === 'ar'
-        ? "لفيت الكلية كلها ولا لقيت دكتور بهذا الاسم! تأكد من الاسم يا هندسة 😅."
-        : "I've searched everywhere but couldn't find this doctor! Double check the name, Engineer 😅.";
+
+    // 4. صياغة الرد (التعامل مع التشابه الكلي)
+    if (matches.length === 1) {
+        let c = matches[0];
+        let office = c.querySelector('p:nth-of-type(2)')?.innerText || "غير مسجل";
+        let email = c.querySelector('p:last-of-type')?.innerText || "غير مسجل";
+        return `🎯 ${currentLang === 'ar' ? 'بيانات الدكتور' : 'Doctor Details'}: \n👤 ${c.getAttribute('data-name')} \n📍 ${office} \n📧 ${email}`;
+    } 
+    else if (matches.length > 1) {
+        // فحص: هل كلهم في نفس القسم؟
+        let firstMajor = getMajorCategory(matches[0].getAttribute('data-specialty'));
+        let allSameMajor = matches.every(m => getMajorCategory(m.getAttribute('data-specialty')) === firstMajor);
+
+        if (allSameMajor && detectedMajorInQuery === firstMajor) {
+            // إذا كان الطالب حدد القسم والأسماء متشابهة فيه، نعطيهم كلهم
+            let allDocs = matches.map(m => {
+               let off = m.querySelector('p:nth-of-type(2)')?.innerText || "غير مسجل";
+               let em = m.querySelector('p:last-of-type')?.innerText || "غير مسجل";
+               return `👤 د. ${m.getAttribute('data-name')}\n📍 ${off}\n📧 ${em}`;
+            });
+            return (currentLang === 'ar' ? "🎯 النتائج المطابقة:" : "🎯 Matching results:") + "\n\n" + allDocs.join("\n---\n");
+        }
+
+        pendingDoctorName = normalizedQuery;
+        return currentLang === 'ar'
+            ? `🧐 وجدت ${matches.length} دكاترة بهذا الاسم. \n💡 اكتب التخصص الآن (كهرب، ميكا، مدني) عشان أحصرهم لك.`
+            : `🧐 Found ${matches.length} doctors. \n💡 Type the major (Elec, Mech, Civil) to filter them.`;
+    }
+
+    return currentLang === 'ar' 
+        ? "❌ لم أعثر على نتائج. \n💡 تلميح: اكتب اسم الدكتور الأول أو اللقب وتأكد من لغة الموقع." 
+        : "❌ No results. \n💡 Hint: Try typing the first or last name and check language settings.";
 }
