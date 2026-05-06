@@ -267,7 +267,15 @@ input:focus, select:focus {
     padding: 30px 15px; margin-top: 40px; border-top: 5px solid #006C35;
 }
 
-.telegram-link {
+/* =========================================
+   7. تذييل الصفحة & التواصل عبر الإيميل (تفاعل الزووم الموحد)
+   ========================================= */
+.footer {
+    background-color: #111827; color: #ffffff; text-align: center;
+    padding: 30px 15px; margin-top: 40px; border-top: 5px solid #006C35;
+}
+
+.email-link {
     display: inline-block !important;
     margin-top: 18px !important;
     color: #4ade80 !important; 
@@ -282,8 +290,8 @@ input:focus, select:focus {
     transition: all 0.3s ease !important;
 }
 
-/* التفاعل مع الماوس (مثل البطاقات) */
-.telegram-link:hover {
+/* التفاعل مع الماوس */
+.email-link:hover {
     background-color: #006C35 !important;
     color: #ffffff !important;
     transform: translateY(-8px) scale(1.1) !important; /* زووم وارتفاع */
@@ -292,8 +300,37 @@ input:focus, select:focus {
 
 /* الوميض والزووم عند النقر */
 .active-flash {
-    animation: telegram-click-glow 0.6s ease-out !important;
+    animation: email-click-glow 0.6s ease-out !important;
 }
+
+/* =========================================
+   9. الأنيميشن المشترك (تحديث أنيميشن النقر)
+   ========================================= */
+@keyframes slowRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes pulse-yellow {
+    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7); }
+    70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(250, 204, 21, 0); }
+    100% { transform: scale(1); }
+}
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 5px rgba(74, 222, 128, 0.2); }
+    50% { box-shadow: 0 0 20px rgba(74, 222, 128, 0.5); }
+    100% { box-shadow: 0 0 5px rgba(74, 222, 128, 0.2); }
+}
+
+/* تم تحديث المسمى هنا ليتوافق مع الإيميل */
+@keyframes email-click-glow {
+    0% { transform: scale(1); }
+    50% { 
+        box-shadow: 0 0 80px rgba(74, 222, 128, 1), 0 0 120px rgba(0, 108, 53, 1); 
+        background-color: rgba(74, 222, 128, 0.9) !important;
+        transform: scale(1.2); /* زووم انفجاري */
+    }
+    100% { transform: scale(1); }
+}
+
+@keyframes wave-anim { 0%, 100% { transform: scaleY(0.5); } 50% { transform: scaleY(1.5); } }
+@keyframes pulse-red { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
 
 /* =========================================
    8. الوضع الليلي (Dark Theme)
@@ -316,7 +353,7 @@ body.dark-theme .doctor-card h2, body.dark-theme .header h1 { color: #4ade80 !im
     50% { box-shadow: 0 0 20px rgba(74, 222, 128, 0.5); }
     100% { box-shadow: 0 0 5px rgba(74, 222, 128, 0.2); }
 }
-@keyframes telegram-click-glow {
+@keyframes email-click-glow {
     0% { transform: scale(1); }
     50% { 
         box-shadow: 0 0 80px rgba(74, 222, 128, 1), 0 0 120px rgba(0, 108, 53, 1); 

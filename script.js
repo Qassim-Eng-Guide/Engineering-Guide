@@ -229,17 +229,25 @@ function drag(e) {
     }
 }
 
-// تشغيل وميض التليجرام الانفجاري
-const telBtn = document.querySelector('.telegram-link');
-if (telBtn) {
-    telBtn.addEventListener('click', function(e) {
+// تشغيل وميض الإيميل الانفجاري
+const emailBtn = document.querySelector('.email-link');
+
+if (emailBtn) {
+    emailBtn.addEventListener('click', function(e) {
+        // إزالة الكلاس وإيقاف الأنيميشن لإعادة تهيئته
         this.classList.remove('active-flash');
         this.style.animation = 'none';
+        
+        // سطر سحري لإجبار المتصفح على إعادة الحساب (Reflow) ليعمل الأنيميشن مرة أخرى
         void this.offsetWidth; 
+        
+        // إضافة كلاس الوميض الانفجاري
         this.classList.add('active-flash');
+        
+        // العودة للوميض الهادئ (Pulse) بعد انتهاء تأثير النقرة
         setTimeout(() => {
-            this.style.animation = 'telegramPulse 2s infinite';
-        }, 500);
+            this.style.animation = 'pulseGlow 2s infinite';
+        }, 600);
     });
 }
 
