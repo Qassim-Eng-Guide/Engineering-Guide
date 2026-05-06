@@ -425,3 +425,30 @@ body.dark-theme .doctor-card h2, body.dark-theme .header h1 { color: #4ade80 !im
 #gace-input-area { display: flex; padding: 10px; border-top: 1px solid #ddd; }
 #gace-input { flex: 1; border: 1px solid #ddd; border-radius: 5px; padding: 5px; outline: none; }
 #gace-input-area button { background: #007bff; color: white; border: none; padding: 5px 10px; margin-right: 5px; border-radius: 5px; cursor: pointer; }
+
+/* الأنميشن الأساسي */
+@keyframes email-click-glow {
+    0% { transform: scale(1); }
+    50% { 
+        box-shadow: 0 0 80px rgba(74, 222, 128, 1), 0 0 120px rgba(0, 108, 53, 1); 
+        background-color: rgba(74, 222, 128, 0.9) !important;
+        transform: scale(1.2);
+    }
+    100% { transform: scale(1); }
+}
+
+/* نسخة Safari */
+@-webkit-keyframes email-click-glow {
+    0% { -webkit-transform: scale(1); }
+    50% { 
+        box-shadow: 0 0 80px rgba(74, 222, 128, 1), 0 0 120px rgba(0, 108, 53, 1); 
+        background-color: rgba(74, 222, 128, 0.9) !important;
+        -webkit-transform: scale(1.2);
+    }
+    100% { -webkit-transform: scale(1); }
+}
+
+.active-flash {
+    -webkit-animation: email-click-glow 0.6s ease-out !important;
+    animation: email-click-glow 0.6s ease-out !important;
+}

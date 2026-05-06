@@ -8,6 +8,7 @@ function normalizeArabic(text) {
         .replace(/[\u064B-\u0652]/g, "") // إزالة التشكيل إن وجد
         .trim();
 }
+
 // 1. تعريف المتغيرات الأساسية
 const body = document.body;
 const darkModeToggle = document.getElementById('darkModeToggle');
@@ -108,7 +109,6 @@ function filterDoctors() {
     var searchInputEl = document.getElementById('searchInput');
     if (!searchInputEl) return;
     
-    // 1. تنظيف النص وتمريره عبر دالة توحيد الحروف (الهمزات)
     var rawInput = searchInputEl.value.toLowerCase().trim().replace(/\.$/, "");
     var searchInput = normalizeArabic(rawInput); 
 
@@ -122,11 +122,8 @@ function filterDoctors() {
 
     for (var i = 0; i < cards.length; i++) {
         var specialty = cards[i].getAttribute('data-specialty') || "";
-        
-        // 2. تطبيق توحيد الحروف على اسم الدكتور أيضاً لضمان المطابقة
         var nameArRaw = cards[i].getAttribute('data-name') || "";
         var nameAr = normalizeArabic(nameArRaw.toLowerCase());
-        
         var nameEn = (cards[i].getAttribute('data-name-en') || "").toLowerCase();
         
         var matchesSpecialty = (specialtyFilter === 'all' || specialty === specialtyFilter);
@@ -157,7 +154,7 @@ window.addEventListener('scroll', function() {
     if (scrollProgress) scrollProgress.style.width = scrolled + "%";
 });
 
-// 8. وظائف النسخ المعدلة
+// 8. وظائف النسخ
 function copyEmail(email) {
     navigator.clipboard.writeText(email).then(() => {
         const msg = currentLang === 'ar' ? "تم نسخ الإيميل بنجاح!" : "Email Copied Successfully!";
@@ -185,12 +182,14 @@ let isDragging = false;
 let currentX, currentY, initialX, initialY;
 let xOffset = 0, yOffset = 0;
 
-menuContainer.addEventListener("touchstart", dragStart, { passive: false });
-menuContainer.addEventListener("touchend", dragEnd, { passive: false });
-menuContainer.addEventListener("touchmove", drag, { passive: false });
-menuContainer.addEventListener("mousedown", dragStart, false);
-document.addEventListener("mouseup", dragEnd, false);
-document.addEventListener("mousemove", drag, false);
+if (menuContainer) {
+    menuContainer.addEventListener("touchstart", dragStart, { passive: false });
+    menuContainer.addEventListener("touchend", dragEnd, { passive: false });
+    menuContainer.addEventListener("touchmove", drag, { passive: false });
+    menuContainer.addEventListener("mousedown", dragStart, false);
+    document.addEventListener("mouseup", dragEnd, false);
+    document.addEventListener("mousemove", drag, false);
+}
 
 function dragStart(e) {
     if (e.type === "touchstart") {
@@ -229,25 +228,33 @@ function drag(e) {
     }
 }
 
-// تشغيل وميض الإيميل الانفجاري
+// =========================================
+// تحديث: تشغيل وميض الإيميل الانفجاري (دعم شامل للأجهزة)
+// =========================================
 const emailBtn = document.querySelector('.email-link');
 
 if (emailBtn) {
     emailBtn.addEventListener('click', function(e) {
-        // إزالة الكلاس وإيقاف الأنيميشن لإعادة تهيئته
-        this.classList.remove('active-flash');
-        this.style.animation = 'none';
+        const self = this;
         
-        // سطر سحري لإجبار المتصفح على إعادة الحساب (Reflow) ليعمل الأنيميشن مرة أخرى
-        void this.offsetWidth; 
-        
-        // إضافة كلاس الوميض الانفجاري
-        this.classList.add('active-flash');
-        
-        // العودة للوميض الهادئ (Pulse) بعد انتهاء تأثير النقرة
-        setTimeout(() => {
-            this.style.animation = 'pulseGlow 2s infinite';
-        }, 600);
+        // 1. إزالة الأنميشن القديم تماماً
+        self.classList.remove('active-flash');
+        self.style.animation = 'none';
+        self.style.webkitAnimation = 'none';
+
+        // 2. استخدام requestAnimationFrame لضمان إعادة التشغيل في كل الأجهزة
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                // 3. تفعيل الوميض الانفجاري
+                self.classList.add('active-flash');
+                
+                // 4. العودة للوميض الهادئ بعد انتهاء التأثير (600ms)
+                setTimeout(() => {
+                    self.style.animation = 'pulseGlow 2s infinite';
+                    self.style.webkitAnimation = 'pulseGlow 2s infinite';
+                }, 600);
+            });
+        });
     });
 }
 
@@ -257,7 +264,6 @@ function toggleGace() {
     const msgDiv = document.getElementById('gace-messages');
     chatBox.classList.toggle('hidden');
     
-    // إفراغ الرسائل القديمة عند تغيير اللغة لضمان ظهور الترحيب باللغة الصحيحة
     if (!chatBox.classList.contains('hidden') && msgDiv.innerHTML === "") {
         if (currentLang === 'ar') {
             addMessage("bot", "أهلاً بك مع أسطورة كلية الهندسة! أنا 'جيس' مساعدك الذكي 🤖.");
@@ -271,6 +277,7 @@ function toggleGace() {
 
 function addMessage(sender, text) {
     const msgDiv = document.getElementById('gace-messages');
+    if (!msgDiv) return;
     const newMsg = document.createElement('div');
     newMsg.className = `msg ${sender}`;
     newMsg.innerText = text;
@@ -286,14 +293,12 @@ function askGace() {
     addMessage("user", query);
     input.value = "";
 
-    // منطق البحث الذكي
     setTimeout(() => {
         const response = processGaceQuery(query);
         addMessage("bot", response);
     }, 500);
 }
 
-// ذاكرة جيس لتذكر الاسم عند وجود تشابه
 let pendingDoctorName = null; 
 
 function processGaceQuery(query) {
@@ -308,11 +313,10 @@ function processGaceQuery(query) {
         return t;
     }
 
-    // 1. معالجة حالة "انتظار التخصص" (دعم وجود أكثر من دكتور بنفس الاسم في نفس القسم)
     if (pendingDoctorName) {
         let studentChoice = getMajorCategory(normalizedQuery);
         let cards = document.getElementsByClassName('doctor-card');
-        let finalMatches = []; // مصفوفة لتخزين كل من يطابق الاسم والقسم
+        let finalMatches = []; 
         
         for (let i = 0; i < cards.length; i++) {
             let nameAr = normalizeArabic(cards[i].getAttribute('data-name') || "").toLowerCase();
@@ -322,7 +326,6 @@ function processGaceQuery(query) {
                 let office = cards[i].querySelector('p:nth-of-type(2)')?.innerText || "غير مسجل";
                 let email = cards[i].querySelector('p:last-of-type')?.innerText || "غير مسجل";
                 let dName = cards[i].getAttribute('data-name');
-                
                 finalMatches.push(`👤 د. ${dName}\n📍 المكتب: ${office}\n📧 ${email}`);
             }
         }
@@ -338,7 +341,6 @@ function processGaceQuery(query) {
             : "💡 Note: No matches in this major. Try another major or check the name.";
     }
 
-    // 2. معالجة الاستظراف
     const jokes = ["هلا", "مين", "تحس", "أحبك", "ذكي", "تعبت", "هندسة"];
     if (jokes.some(j => normalizedQuery.includes(j)) && cleanQuery.length < 10) {
         const funnyReplies = currentLang === 'ar' ? [
@@ -348,7 +350,6 @@ function processGaceQuery(query) {
         return funnyReplies[Math.floor(Math.random() * funnyReplies.length)];
     }
 
-    // 3. محرك البحث الأساسي
     if (cleanQuery.length < 3) {
         return currentLang === 'ar' 
             ? "📝 ملاحظة: الاسم قصير. اكتب (الأول أو اللقب) بوضوح لنتائج أسرع."
@@ -376,7 +377,6 @@ function processGaceQuery(query) {
         }
     }
 
-    // 4. صياغة الرد (التعامل مع التشابه الكلي)
     if (matches.length === 1) {
         let c = matches[0];
         let office = c.querySelector('p:nth-of-type(2)')?.innerText || "غير مسجل";
@@ -384,12 +384,10 @@ function processGaceQuery(query) {
         return `🎯 ${currentLang === 'ar' ? 'بيانات الدكتور' : 'Doctor Details'}: \n👤 ${c.getAttribute('data-name')} \n📍 ${office} \n📧 ${email}`;
     } 
     else if (matches.length > 1) {
-        // فحص: هل كلهم في نفس القسم؟
         let firstMajor = getMajorCategory(matches[0].getAttribute('data-specialty'));
         let allSameMajor = matches.every(m => getMajorCategory(m.getAttribute('data-specialty')) === firstMajor);
 
         if (allSameMajor && detectedMajorInQuery === firstMajor) {
-            // إذا كان الطالب حدد القسم والأسماء متشابهة فيه، نعطيهم كلهم
             let allDocs = matches.map(m => {
                let off = m.querySelector('p:nth-of-type(2)')?.innerText || "غير مسجل";
                let em = m.querySelector('p:last-of-type')?.innerText || "غير مسجل";
