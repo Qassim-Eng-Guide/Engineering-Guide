@@ -30,7 +30,7 @@ body::before {
     top: 0; right: 0;
     height: 4px;
     background: linear-gradient(to left, #006C35, #4ade80);
-    z-index: 5000;
+    z-index: 9999; /* تم الرفع لضمان الظهور فوق كل العناصر */
     width: 0%;
 }
 
@@ -171,6 +171,7 @@ input:focus, select:focus {
 
 .doctor-card {
     background: rgba(255, 255, 255, 0.85);
+    -webkit-backdrop-filter: blur(12px); /* إصلاح ثغرة سفاري */
     backdrop-filter: blur(12px);
     padding: 22px;
     border-radius: 20px;
@@ -214,7 +215,6 @@ input:focus, select:focus {
     border-radius: 4px !important;
     font-weight: bold !important;
     display: inline-block !important;
-    animation: none !important;
 }
 
 /* التوهج وTooltip النسخ */
@@ -239,7 +239,7 @@ input:focus, select:focus {
 .settings-menu {
     position: fixed; bottom: 25px; right: 25px;
     display: flex; flex-direction: column; align-items: center; z-index: 4000;
-    touch-action: none; user-select: none; cursor: move;
+    touch-action: none; user-select: none;
 }
 
 .menu-options {
@@ -260,15 +260,7 @@ input:focus, select:focus {
 }
 
 /* =========================================
-   7. تذييل الصفحة & التليجرام (تفاعل الزووم الموحد)
-   ========================================= */
-.footer {
-    background-color: #111827; color: #ffffff; text-align: center;
-    padding: 30px 15px; margin-top: 40px; border-top: 5px solid #006C35;
-}
-
-/* =========================================
-   7. تذييل الصفحة & التواصل عبر الإيميل (تفاعل الزووم الموحد)
+   7. تذييل الصفحة & التواصل عبر الإيميل 
    ========================================= */
 .footer {
     background-color: #111827; color: #ffffff; text-align: center;
@@ -290,57 +282,28 @@ input:focus, select:focus {
     transition: all 0.3s ease !important;
 }
 
-/* التفاعل مع الماوس */
 .email-link:hover {
     background-color: #006C35 !important;
     color: #ffffff !important;
-    transform: translateY(-8px) scale(1.1) !important; /* زووم وارتفاع */
+    transform: translateY(-8px) scale(1.1) !important; 
     box-shadow: 0 0 30px rgba(74, 222, 128, 0.6), 0 12px 25px rgba(0, 108, 53, 0.2) !important;
 }
 
-/* الوميض والزووم عند النقر */
 .active-flash {
-    animation: email-click-glow 0.6s ease-out !important;
+    -webkit-animation: email-click-glow-v2 0.6s ease-out !important; /* إصلاح تسمية الأنميشن */
+    animation: email-click-glow-v2 0.6s ease-out !important;
 }
-
-/* =========================================
-   9. الأنيميشن المشترك (تحديث أنيميشن النقر)
-   ========================================= */
-@keyframes slowRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-@keyframes pulse-yellow {
-    0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7); }
-    70% { transform: scale(1.1); box-shadow: 0 0 0 10px rgba(250, 204, 21, 0); }
-    100% { transform: scale(1); }
-}
-@keyframes pulseGlow {
-    0% { box-shadow: 0 0 5px rgba(74, 222, 128, 0.2); }
-    50% { box-shadow: 0 0 20px rgba(74, 222, 128, 0.5); }
-    100% { box-shadow: 0 0 5px rgba(74, 222, 128, 0.2); }
-}
-
-/* تم تحديث المسمى هنا ليتوافق مع الإيميل */
-@keyframes email-click-glow {
-    0% { transform: scale(1); }
-    50% { 
-        box-shadow: 0 0 80px rgba(74, 222, 128, 1), 0 0 120px rgba(0, 108, 53, 1); 
-        background-color: rgba(74, 222, 128, 0.9) !important;
-        transform: scale(1.2); /* زووم انفجاري */
-    }
-    100% { transform: scale(1); }
-}
-
-@keyframes wave-anim { 0%, 100% { transform: scaleY(0.5); } 50% { transform: scaleY(1.5); } }
-@keyframes pulse-red { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
 
 /* =========================================
    8. الوضع الليلي (Dark Theme)
    ========================================= */
 body.dark-theme { background: #0b1120 !important; color: #e5e7eb; }
-body.dark-theme .doctor-card, body.dark-theme .office-guide { background: rgba(30, 41, 59, 0.8) !important; }
+body.dark-theme .doctor-card, body.dark-theme .office-guide { background: rgba(30, 41, 59, 0.85) !important; border: 1px solid rgba(255,255,255,0.1); }
 body.dark-theme .doctor-card h2, body.dark-theme .header h1 { color: #4ade80 !important; }
+body.dark-theme input, body.dark-theme select { background: #1e293b; color: white; border-color: #334155; }
 
 /* =========================================
-   9. الأنيميشن المشترك
+   9. الأنيميشن المشترك 
    ========================================= */
 @keyframes slowRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes pulse-yellow {
@@ -353,15 +316,27 @@ body.dark-theme .doctor-card h2, body.dark-theme .header h1 { color: #4ade80 !im
     50% { box-shadow: 0 0 20px rgba(74, 222, 128, 0.5); }
     100% { box-shadow: 0 0 5px rgba(74, 222, 128, 0.2); }
 }
-@keyframes email-click-glow {
+
+@keyframes email-click-glow-v2 {
     0% { transform: scale(1); }
     50% { 
         box-shadow: 0 0 80px rgba(74, 222, 128, 1), 0 0 120px rgba(0, 108, 53, 1); 
         background-color: rgba(74, 222, 128, 0.9) !important;
-        transform: scale(1.2); /* زووم انفجاري */
+        transform: scale(1.2); 
     }
     100% { transform: scale(1); }
 }
+
+@-webkit-keyframes email-click-glow-v2 {
+    0% { -webkit-transform: scale(1); }
+    50% { 
+        box-shadow: 0 0 80px rgba(74, 222, 128, 1), 0 0 120px rgba(0, 108, 53, 1); 
+        background-color: rgba(74, 222, 128, 0.9) !important;
+        -webkit-transform: scale(1.2);
+    }
+    100% { -webkit-transform: scale(1); }
+}
+
 @keyframes wave-anim { 0%, 100% { transform: scaleY(0.5); } 50% { transform: scaleY(1.5); } }
 @keyframes pulse-red { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.2); opacity: 0.7; } 100% { transform: scale(1); opacity: 1; } }
 
@@ -370,49 +345,10 @@ body.dark-theme .doctor-card h2, body.dark-theme .header h1 { color: #4ade80 !im
 
 @media (max-width: 700px) { .controls { grid-template-columns: 1fr; } .header h1 { font-size: 28px; } }
 
-/* تنسيق البحث الصوتي داخل شريط البحث */
-.search-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    width: 100%;
-}
-
-#voiceSearchBtn {
-    position: absolute;
-    left: 15px; /* الميكروفون بجهة اليسار داخل المربع */
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 20px;
-    color: #006C35;
-    z-index: 10;
-    transition: 0.3s;
-}
-
-#voiceSearchBtn.listening {
-    color: #dc2626;
-    animation: pulse-red 1.5s infinite;
-}
-
-.voice-waves {
-    display: none;
-    position: absolute;
-    left: 45px;
-    height: 20px;
-    align-items: center;
-    gap: 3px;
-}
-
-.voice-waves span {
-    width: 3px;
-    height: 100%;
-    background: #4ade80;
-    border-radius: 3px;
-    animation: wave-anim 0.8s infinite ease-in-out;
-}
-
-#gace-container { position: fixed; bottom: 20px; left: 20px; z-index: 1000; font-family: 'Cairo', sans-serif; }
+/* =========================================
+   10. الشات بوت والبحث الصوتي
+   ========================================= */
+#gace-container { position: fixed; bottom: 20px; left: 20px; z-index: 5000; font-family: 'Cairo', sans-serif; }
 #gace-trigger { background: #007bff; border: none; border-radius: 50%; cursor: pointer; padding: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); transition: 0.3s; }
 #gace-trigger:hover { transform: scale(1.1); }
 #gace-chat-box { width: 300px; height: 400px; background: white; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); margin-bottom: 15px; display: flex; flex-direction: column; overflow: hidden; }
@@ -424,31 +360,15 @@ body.dark-theme .doctor-card h2, body.dark-theme .header h1 { color: #4ade80 !im
 .user { background: #007bff; color: white; align-self: flex-end; }
 #gace-input-area { display: flex; padding: 10px; border-top: 1px solid #ddd; }
 #gace-input { flex: 1; border: 1px solid #ddd; border-radius: 5px; padding: 5px; outline: none; }
-#gace-input-area button { background: #007bff; color: white; border: none; padding: 5px 10px; margin-right: 5px; border-radius: 5px; cursor: pointer; }
 
-/* الأنميشن الأساسي */
-@keyframes email-click-glow {
-    0% { transform: scale(1); }
-    50% { 
-        box-shadow: 0 0 80px rgba(74, 222, 128, 1), 0 0 120px rgba(0, 108, 53, 1); 
-        background-color: rgba(74, 222, 128, 0.9) !important;
-        transform: scale(1.2);
-    }
-    100% { transform: scale(1); }
+/* =========================================
+   11. ميزة عرض المزيد
+   ========================================= */
+.hidden-card { display: none !important; }
+.load-more-container { text-align: center; margin: 30px 0 50px; }
+#loadMoreBtn {
+    background-color: #006C35; color: white; border: none; padding: 14px 40px;
+    font-size: 16px; font-weight: bold; border-radius: 30px; cursor: pointer;
+    transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 108, 53, 0.2);
 }
-
-/* نسخة Safari */
-@-webkit-keyframes email-click-glow {
-    0% { -webkit-transform: scale(1); }
-    50% { 
-        box-shadow: 0 0 80px rgba(74, 222, 128, 1), 0 0 120px rgba(0, 108, 53, 1); 
-        background-color: rgba(74, 222, 128, 0.9) !important;
-        -webkit-transform: scale(1.2);
-    }
-    100% { -webkit-transform: scale(1); }
-}
-
-.active-flash {
-    -webkit-animation: email-click-glow 0.6s ease-out !important;
-    animation: email-click-glow 0.6s ease-out !important;
-}
+#loadMoreBtn:hover { transform: translateY(-3px) scale(1.03); background-color: #004d26; }

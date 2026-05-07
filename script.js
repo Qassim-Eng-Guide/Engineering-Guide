@@ -14,6 +14,7 @@ const body = document.body;
 const darkModeToggle = document.getElementById('darkModeToggle');
 const langToggle = document.getElementById('langToggle');
 let currentLang = 'ar';
+let itemsToShow = 12; // متغير للتحكم في عدد البطاقات الظاهرة
 
 // 2. فحص التفضيل المحفوظ للوضع الليلي
 if (localStorage.getItem('theme') === 'dark') {
@@ -61,7 +62,8 @@ const translations = {
         guideTitle: "دليل الرموز :",
         searchPlholder: "ابحث باسم الدكتور...",
         langBtn: "🌐 English",
-        noResults: "⚠️ عذراً، لا يوجد دكتور بهذا الاسم - تواصل معنا لإضافته."
+        noResults: "⚠️ عذراً، لا يوجد دكتور بهذا الاسم - تواصل معنا لإضافته.",
+        loadMore: "عرض المزيد"
     },
     en: {
         title: "College of Engineering",
@@ -70,7 +72,8 @@ const translations = {
         guideTitle: "Office Guide:",
         searchPlholder: "Search by doctor name...",
         langBtn: "🌐 العربية",
-        noResults: "⚠️ Sorry, no doctor found with this name - Contact us to add it."
+        noResults: "⚠️ Sorry, no doctor found with this name - Contact us to add it.",
+        loadMore: "Load More"
     }
 };
 
@@ -104,7 +107,7 @@ function toggleLanguage() {
     filterDoctors();
 }
 
-// 6. دالة البحث والفلترة
+// 6. دالة البحث والفلترة (تم تحديثها لدعم عرض المزيد)
 function filterDoctors() {
     var searchInputEl = document.getElementById('searchInput');
     if (!searchInputEl) return;
@@ -115,11 +118,26 @@ function filterDoctors() {
     var specialtyFilter = document.getElementById('specialtyFilter').value;
     var cards = document.getElementsByClassName('doctor-card');
     var doctorList = document.querySelector('.doctor-list');
-    var visibleCount = 0;
+    
+    // جلب زر عرض المزيد أو إنشاؤه تلقائياً
+    let loadMoreBtn = document.getElementById('loadMoreBtn');
+    if (!loadMoreBtn) {
+        const container = document.createElement('div');
+        container.className = 'load-more-container';
+        container.innerHTML = `<button id="loadMoreBtn" style="display:none;">عرض المزيد</button>`;
+        doctorList.parentNode.insertBefore(container, doctorList.nextSibling);
+        loadMoreBtn = document.getElementById('loadMoreBtn');
+        loadMoreBtn.onclick = function() {
+            itemsToShow += 12;
+            filterDoctors();
+        };
+    }
 
+    var visibleMatches = [];
     var existingMsg = document.querySelector('.no-results-msg');
     if (existingMsg) existingMsg.remove();
 
+    // المرحلة 1: فلترة بناءً على البحث والتخصص
     for (var i = 0; i < cards.length; i++) {
         var specialty = cards[i].getAttribute('data-specialty') || "";
         var nameArRaw = cards[i].getAttribute('data-name') || "";
@@ -130,20 +148,36 @@ function filterDoctors() {
         var matchesSearch = nameAr.includes(searchInput) || nameEn.includes(searchInput);
 
         if (matchesSearch && matchesSpecialty) {
-            cards[i].style.display = "block";
-            visibleCount++;
+            visibleMatches.push(cards[i]);
         } else {
             cards[i].style.display = "none";
         }
     }
 
-    if (visibleCount === 0 && doctorList) {
+    // المرحلة 2: تطبيق نظام الصفحات (Pagination)
+    for (var j = 0; j < visibleMatches.length; j++) {
+        if (j < itemsToShow) {
+            visibleMatches[j].style.display = "block";
+        } else {
+            visibleMatches[j].style.display = "none";
+        }
+    }
+
+    // المرحلة 3: التحكم في الزر والرسائل
+    loadMoreBtn.style.display = (visibleMatches.length > itemsToShow) ? "inline-block" : "none";
+    loadMoreBtn.innerText = translations[currentLang].loadMore;
+
+    if (visibleMatches.length === 0 && doctorList) {
         var msg = document.createElement('div');
         msg.className = 'no-results-msg';
         msg.innerHTML = translations[currentLang].noResults;
         doctorList.appendChild(msg);
     }
 }
+
+// تصفير عدد العناصر عند البحث أو الفلترة الجديدة
+document.getElementById('searchInput').addEventListener('input', () => { itemsToShow = 12; });
+document.getElementById('specialtyFilter').addEventListener('change', () => { itemsToShow = 12; });
 
 // 7. شريط التقدم
 window.addEventListener('scroll', function() {
@@ -236,19 +270,13 @@ const emailBtn = document.querySelector('.email-link');
 if (emailBtn) {
     emailBtn.addEventListener('click', function(e) {
         const self = this;
-        
-        // 1. إزالة الأنميشن القديم تماماً
         self.classList.remove('active-flash');
         self.style.animation = 'none';
         self.style.webkitAnimation = 'none';
 
-        // 2. استخدام requestAnimationFrame لضمان إعادة التشغيل في كل الأجهزة
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
-                // 3. تفعيل الوميض الانفجاري
                 self.classList.add('active-flash');
-                
-                // 4. العودة للوميض الهادئ بعد انتهاء التأثير (600ms)
                 setTimeout(() => {
                     self.style.animation = 'pulseGlow 2s infinite';
                     self.style.webkitAnimation = 'pulseGlow 2s infinite';
@@ -406,3 +434,6 @@ function processGaceQuery(query) {
         ? "❌ لم أعثر على نتائج. \n💡 تلميح: اكتب اسم الدكتور الأول أو اللقب وتأكد من لغة الموقع." 
         : "❌ No results. \n💡 Hint: Try typing the first or last name and check language settings.";
 }
+
+// استدعاء أولي لتهيئة الصفحة عند التحميل
+window.onload = filterDoctors;
