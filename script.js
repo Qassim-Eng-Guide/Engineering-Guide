@@ -14,7 +14,7 @@ const body = document.body;
 const darkModeToggle = document.getElementById('darkModeToggle');
 const langToggle = document.getElementById('langToggle');
 let currentLang = 'ar';
-let itemsToShow = 12; // متغير للتحكم في عدد البطاقات الظاهرة
+let itemsToShow = 12; 
 
 // 2. فحص التفضيل المحفوظ للوضع الليلي
 if (localStorage.getItem('theme') === 'dark') {
@@ -25,7 +25,7 @@ if (localStorage.getItem('theme') === 'dark') {
 // 3. وظائف القائمة (الترس)
 function toggleMenu() {
     const menu = document.querySelector('.settings-menu');
-    if (isDragging) return; // منع الفتح أثناء السحب
+    if (isDragging) return; 
     menu.classList.toggle('active');
 }
 
@@ -49,7 +49,11 @@ if (darkModeToggle) {
 
 function updateDarkModeButton(isDark) {
     if (darkModeToggle) {
-        darkModeToggle.textContent = isDark ? '☀️ الوضع النهاري' : '🌙 الوضع الليلي';
+        if (currentLang === 'ar') {
+            darkModeToggle.textContent = isDark ? '☀️ الوضع النهاري' : '🌙 الوضع الليلي';
+        } else {
+            darkModeToggle.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+        }
     }
 }
 
@@ -104,10 +108,34 @@ function toggleLanguage() {
         }
     });
 
+    // تحديث أداة جيس لتغيير لغتها فوراً ورسائل الترحيب
+    const gaceInput = document.getElementById('gace-input');
+    const gaceHeader = document.querySelector('#gace-header span');
+    const msgDiv = document.getElementById('gace-messages');
+
+    if (gaceInput && gaceHeader && msgDiv) {
+        msgDiv.innerHTML = ""; 
+        pendingDoctorName = null; // تصفير البحث عند تغيير اللغة
+
+        if (currentLang === 'ar') {
+            gaceHeader.innerText = ' 🤖 المساعد الذكي "جيس"';
+            gaceInput.placeholder = 'اسألني عن أي دكتور...';
+            addMessage("bot", "أهلاً بك مع أسطورة كلية الهندسة! أنا 'جيس' مساعدك الذكي 🤖.");
+            addMessage("bot", "كيف تستفيد مني؟ \n• ابحث عن أي دكتور بالعربي أو الإنجليزي.\n• بعطيك المكتب والإيميل فوراً.\n• اكتب 3 حروف فأكثر 🔍.");
+        } else {
+            gaceHeader.innerText = ' 🤖 Smart Assistant "Gace"';
+            gaceInput.placeholder = 'Ask me about any doctor...';
+            addMessage("bot", "Welcome to the Engineering Guide! I am 'Gace', your smart assistant 🤖.");
+            addMessage("bot", "How to use me? \n• Search for any doctor (AR/EN).\n• I'll give you office & email info.\n• Type 3+ characters to start 🔍.");
+        }
+    }
+// تحديث نص زر الوضع الليلي بناءً على اللغة الجديدة
+const isDark = body.classList.contains('dark-theme');
+updateDarkModeButton(isDark);
     filterDoctors();
 }
 
-// 6. دالة البحث والفلترة (تم تحديثها لدعم عرض المزيد)
+// 6. دالة البحث والفلترة
 function filterDoctors() {
     var searchInputEl = document.getElementById('searchInput');
     if (!searchInputEl) return;
@@ -119,7 +147,6 @@ function filterDoctors() {
     var cards = document.getElementsByClassName('doctor-card');
     var doctorList = document.querySelector('.doctor-list');
     
-    // جلب زر عرض المزيد أو إنشاؤه تلقائياً
     let loadMoreBtn = document.getElementById('loadMoreBtn');
     if (!loadMoreBtn) {
         const container = document.createElement('div');
@@ -137,7 +164,6 @@ function filterDoctors() {
     var existingMsg = document.querySelector('.no-results-msg');
     if (existingMsg) existingMsg.remove();
 
-    // المرحلة 1: فلترة بناءً على البحث والتخصص
     for (var i = 0; i < cards.length; i++) {
         var specialty = cards[i].getAttribute('data-specialty') || "";
         var nameArRaw = cards[i].getAttribute('data-name') || "";
@@ -154,7 +180,6 @@ function filterDoctors() {
         }
     }
 
-    // المرحلة 2: تطبيق نظام الصفحات (Pagination)
     for (var j = 0; j < visibleMatches.length; j++) {
         if (j < itemsToShow) {
             visibleMatches[j].style.display = "block";
@@ -163,7 +188,6 @@ function filterDoctors() {
         }
     }
 
-    // المرحلة 3: التحكم في الزر والرسائل
     loadMoreBtn.style.display = (visibleMatches.length > itemsToShow) ? "inline-block" : "none";
     loadMoreBtn.innerText = translations[currentLang].loadMore;
 
@@ -175,7 +199,6 @@ function filterDoctors() {
     }
 }
 
-// تصفير عدد العناصر عند البحث أو الفلترة الجديدة
 document.getElementById('searchInput').addEventListener('input', () => { itemsToShow = 12; });
 document.getElementById('specialtyFilter').addEventListener('change', () => { itemsToShow = 12; });
 
@@ -262,18 +285,14 @@ function drag(e) {
     }
 }
 
-// =========================================
-// تحديث: تشغيل وميض الإيميل الانفجاري (دعم شامل للأجهزة)
-// =========================================
+// وميض الإيميل
 const emailBtn = document.querySelector('.email-link');
-
 if (emailBtn) {
     emailBtn.addEventListener('click', function(e) {
         const self = this;
         self.classList.remove('active-flash');
         self.style.animation = 'none';
         self.style.webkitAnimation = 'none';
-
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
                 self.classList.add('active-flash');
@@ -286,7 +305,7 @@ if (emailBtn) {
     });
 }
 
-// وظائف المساعد الذكي جيس (Gace)
+// وظائف جيس (Gace)
 function toggleGace() {
     const chatBox = document.getElementById('gace-chat-box');
     const msgDiv = document.getElementById('gace-messages');
@@ -295,10 +314,10 @@ function toggleGace() {
     if (!chatBox.classList.contains('hidden') && msgDiv.innerHTML === "") {
         if (currentLang === 'ar') {
             addMessage("bot", "أهلاً بك مع أسطورة كلية الهندسة! أنا 'جيس' مساعدك الذكي 🤖.");
-            addMessage("bot", "كيف تستفيد مني؟ \n• ابحث عن أي دكتور.\n• بعطيك المكتب والإيميل فوراً.\n• اكتب 3 حروف فأكثر 🔍.");
+            addMessage("bot", "كيف تستفيد مني؟ \n• ابحث عن أي دكتور بالعربي أو الإنجليزي.\n• بعطيك المكتب والإيميل فوراً.\n• اكتب 3 حروف فأكثر 🔍.");
         } else {
             addMessage("bot", "Welcome to the Engineering Guide! I am 'Gace', your smart assistant 🤖.");
-            addMessage("bot", "How to use me? \n• Search for any doctor.\n• I'll give you office & email info.\n• Type 3+ characters to start 🔍.");
+            addMessage("bot", "How to use me? \n• Search for any doctor (AR/EN).\n• I'll give you office & email info.\n• Type 3+ characters to start 🔍.");
         }
     }
 }
@@ -317,10 +336,8 @@ function askGace() {
     const input = document.getElementById('gace-input');
     const query = input.value.trim();
     if (!query) return;
-
     addMessage("user", query);
     input.value = "";
-
     setTimeout(() => {
         const response = processGaceQuery(query);
         addMessage("bot", response);
@@ -335,9 +352,9 @@ function processGaceQuery(query) {
 
     function getMajorCategory(text) {
         let t = normalizeArabic(text || "").toLowerCase();
-        if (/كهرب|اتصالا|حاسب|الكترون|elec|computer|telecom/.test(t)) return "كهرباء";
-        if (/ميكا|الات|تصميم|حرار|انتاج|mech|power|prod/.test(t)) return "ميكانيكا";
-        if (/مدن|انشاء|طرق|خرسان|civil|structure|road/.test(t)) return "مدنية";
+        if (/كهرب|اتصالا|حاسب|الكترون|elec|computer|telecom|eng/.test(t)) return "كهرباء";
+        if (/ميكا|الات|تصميم|حرار|انتاج|mech|power|prod|eng/.test(t)) return "ميكانيكا";
+        if (/مدن|انشاء|طرق|خرسان|civil|structure|road|eng/.test(t)) return "مدنية";
         return t;
     }
 
@@ -348,12 +365,13 @@ function processGaceQuery(query) {
         
         for (let i = 0; i < cards.length; i++) {
             let nameAr = normalizeArabic(cards[i].getAttribute('data-name') || "").toLowerCase();
+            let nameEn = (cards[i].getAttribute('data-name-en') || "").toLowerCase();
             let doctorMajor = getMajorCategory(cards[i].getAttribute('data-specialty') || "");
 
-            if (nameAr.includes(pendingDoctorName) && doctorMajor === studentChoice) {
+            if ((nameAr.includes(pendingDoctorName) || nameEn.includes(pendingDoctorName)) && doctorMajor === studentChoice) {
                 let office = cards[i].querySelector('p:nth-of-type(2)')?.innerText || "غير مسجل";
                 let email = cards[i].querySelector('p:last-of-type')?.innerText || "غير مسجل";
-                let dName = cards[i].getAttribute('data-name');
+                let dName = currentLang === 'ar' ? cards[i].getAttribute('data-name') : cards[i].getAttribute('data-name-en');
                 finalMatches.push(`👤 د. ${dName}\n📍 المكتب: ${office}\n📧 ${email}`);
             }
         }
@@ -363,30 +381,30 @@ function processGaceQuery(query) {
             let header = currentLang === 'ar' ? "✅ وجدت المطلوب:" : "✅ Results found:";
             return header + "\n\n" + finalMatches.join("\n" + "-".repeat(15) + "\n");
         }
-
+        pendingDoctorName = null; // تصفير عند عدم المطابقة
         return currentLang === 'ar' 
-            ? "💡 ملاحظة: لم أجد أحداً بهذا الاسم في هذا القسم. جرب قسماً آخر أو تأكد من الاسم." 
-            : "💡 Note: No matches in this major. Try another major or check the name.";
+            ? "💡 ملاحظة: لم أجد أحداً بهذا الاسم في هذا القسم. جرب اسماً آخر." 
+            : "💡 Note: No matches in this major. Try another name.";
     }
 
-    const jokes = ["هلا", "مين", "تحس", "أحبك", "ذكي", "تعبت", "هندسة"];
-    if (jokes.some(j => normalizedQuery.includes(j)) && cleanQuery.length < 10) {
+    const jokes = ["هلا", "مين", "تحس", "أحبك", "ذكي", "تعبت", "هندسة", "hello", "hi", "bot"];
+    if (jokes.some(j => cleanQuery.includes(j)) && cleanQuery.length < 10) {
         const funnyReplies = currentLang === 'ar' ? [
             "مركز في الاستظراف وناسي الكويز؟ اخلص عطني اسم الدكتور 😂",
             "وفر ظرافتك للدكاترة، أنا جيس مبرمج للعمل! تبي دكتور؟ ☕"
-        ] : ["Focus on your studies, engineer! 😂"];
+        ] : ["Focus on your studies, engineer! 😂 Give me a doctor name."];
         return funnyReplies[Math.floor(Math.random() * funnyReplies.length)];
     }
 
     if (cleanQuery.length < 3) {
         return currentLang === 'ar' 
-            ? "📝 ملاحظة: الاسم قصير. اكتب (الأول أو اللقب) بوضوح لنتائج أسرع."
-            : "📝 Note: Name too short. Use first or last name for faster results.";
+            ? "📝 ملاحظة: الاسم قصير. اكتب (الأول أو اللقب) بوضوح."
+            : "📝 Note: Name too short. Use first or last name.";
     }
 
     let cards = document.getElementsByClassName('doctor-card');
     let matches = [];
-    let detectedMajorInQuery = getMajorCategory(normalizedQuery);
+    let detectedMajorInQuery = getMajorCategory(cleanQuery);
 
     for (let i = 0; i < cards.length; i++) {
         let nameAr = normalizeArabic(cards[i].getAttribute('data-name') || "").toLowerCase();
@@ -406,34 +424,24 @@ function processGaceQuery(query) {
     }
 
     if (matches.length === 1) {
+        pendingDoctorName = null;
         let c = matches[0];
         let office = c.querySelector('p:nth-of-type(2)')?.innerText || "غير مسجل";
         let email = c.querySelector('p:last-of-type')?.innerText || "غير مسجل";
-        return `🎯 ${currentLang === 'ar' ? 'بيانات الدكتور' : 'Doctor Details'}: \n👤 ${c.getAttribute('data-name')} \n📍 ${office} \n📧 ${email}`;
+        let dName = currentLang === 'ar' ? c.getAttribute('data-name') : c.getAttribute('data-name-en');
+        return `🎯 ${currentLang === 'ar' ? 'بيانات الدكتور' : 'Doctor Details'}: \n👤 ${dName} \n📍 ${office} \n📧 ${email}`;
     } 
     else if (matches.length > 1) {
-        let firstMajor = getMajorCategory(matches[0].getAttribute('data-specialty'));
-        let allSameMajor = matches.every(m => getMajorCategory(m.getAttribute('data-specialty')) === firstMajor);
-
-        if (allSameMajor && detectedMajorInQuery === firstMajor) {
-            let allDocs = matches.map(m => {
-               let off = m.querySelector('p:nth-of-type(2)')?.innerText || "غير مسجل";
-               let em = m.querySelector('p:last-of-type')?.innerText || "غير مسجل";
-               return `👤 د. ${m.getAttribute('data-name')}\n📍 ${off}\n📧 ${em}`;
-            });
-            return (currentLang === 'ar' ? "🎯 النتائج المطابقة:" : "🎯 Matching results:") + "\n\n" + allDocs.join("\n---\n");
-        }
-
-        pendingDoctorName = normalizedQuery;
+        pendingDoctorName = cleanQuery;
         return currentLang === 'ar'
             ? `🧐 وجدت ${matches.length} دكاترة بهذا الاسم. \n💡 اكتب التخصص الآن (كهرب، ميكا، مدني) عشان أحصرهم لك.`
             : `🧐 Found ${matches.length} doctors. \n💡 Type the major (Elec, Mech, Civil) to filter them.`;
     }
 
+    pendingDoctorName = null; 
     return currentLang === 'ar' 
-        ? "❌ لم أعثر على نتائج. \n💡 تلميح: اكتب اسم الدكتور الأول أو اللقب وتأكد من لغة الموقع." 
-        : "❌ No results. \n💡 Hint: Try typing the first or last name and check language settings.";
+        ? "❌ لم أعثر على نتائج. \n💡 جرب كتابة اسم الدكتور الأول أو اللقب." 
+        : "❌ No results. \n💡 Try typing the first or last name.";
 }
 
-// استدعاء أولي لتهيئة الصفحة عند التحميل
 window.onload = filterDoctors;
